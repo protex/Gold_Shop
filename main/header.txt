@@ -1,0 +1,4 @@
+
+vitals.shop = (function(){
+   
+    return{
