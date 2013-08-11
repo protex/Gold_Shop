@@ -2,7 +2,7 @@
         init_items: function(){
           	if( location.href.match(/\?shop\?items/) ){
                 yootil.create.nav_branch('/\?shop?items/','Items & Costs');
-                shop_catagories = [];
+                shop_categories = [];
                 var items = vitals.shop.data.items;
                 var table_html = '<table class="list" role="grid">' +
                                     '<thead>' +
@@ -17,19 +17,19 @@
                                 '</table>';
 				var cats = proboards.plugin.get('gold_shop').settings.catagories;
                 for( i=0; i<cats.length; i++){
-                 	shop_catagories.push( cats[i].catagory );  
+                 	shop_categories.push( cats[i].catagory );  
                 }
-                for( i=0; i<shop_catagories.length; i++ ){
-                	if( $('.shop-catagory').length < 1 ){
-                        $('.shop-welcome').after('<div class="container"><div onclick="$(this).siblings().first().toggle()" style="cursor: pointer" class="shop-catagory-first shop-catagory title-bar"><h1 class="catagory-title">' + shop_catagories[i] +'</h1></div><div style="display: none" class="content cap-bottom">' + table_html + '</div></div>');
+                for( i=0; i<shop_categories.length; i++ ){
+                	if( $('.shop-category').length < 1 ){
+                        $('.shop-welcome').after('<div class="container"><div onclick="$(this).siblings().first().toggle()" style="cursor: pointer" class="shop-category-first shop-category title-bar"><h1 class="category-title">' + shop_categories[i] +'</h1></div><div style="display: none" class="content cap-bottom">' + table_html + '</div></div>');
                     } 
                     else{
-                        $('.shop-catagory:last').parent().after('<div class="container"><div onclick="$(this).siblings().first().toggle()" style="cursor: pointer" class="shop-catagory title-bar"><h1 class="catagory-title">' + shop_catagories[i] +'</h1></div><div style="display: none" class="content cap-bottom">' + table_html + '</div></div>');	   
+                        $('.shop-category:last').parent().after('<div class="container"><div onclick="$(this).siblings().first().toggle()" style="cursor: pointer" class="shop-category title-bar"><h1 class="category-title">' + shop_categories[i] +'</h1></div><div style="display: none" class="content cap-bottom">' + table_html + '</div></div>');	   
                     }
                 }
                 for( i=0; i<items.length; i++){
                     var item_ = items[i].item_id;
-                    $('.shop-catagory').each(function(){
+                    $('.shop-category').each(function(){
                      	if( $(this).text() == items[i].item_catagory ){
                             $(this).parent().children().last().children().first().children().last().append('<tr class="shelf board item"><td class="icon"></td><td class="main"></td><td class="latest last"></td></tr>');
                             $(this).parent().children().last().children().first().children().last().children().last().children().first().next().attr('item-number', items[i].item_id ).click(function(){
@@ -55,7 +55,7 @@
                                     }
                                 ); 
                             });
-                         	$(this).parent().children().last().children().first().children().last().children().last().children().first().html('<img src=' + items[i].image_of_item +'></img>'); 
+                         	$(this).parent().children().last().children().first().children().last().children().last().children().first().html('<img src="' + items[i].image_of_item +'"></img>').attr('title' , ( items[i].item_name != "undefined" && items[i].item_name != "" )? items[i].item_name : ''); 
                             $(this).parent().children().last().children().first().children().last().children().last().children().first().next().html( items[i].description );
                             $(this).parent().children().last().children().first().children().last().children().last().children().last().html( '<center>' + pixeldepth.monetary.settings.money_symbol + items[i].cost_of_item + ' | ' + ((items[i].amount == '')? '&infin;' : items[i].amount) + ' | ' + items[i].item_id + '</center>' );
                         }

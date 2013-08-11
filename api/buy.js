@@ -1,8 +1,7 @@
         
         buy: function( item , amount ){
-            var items = vitals.shop.data.items;
-            vitals.shop.data.object = ( yootil.is_json( vitals.shop.data.get() ) )? $.parseJSON( vitals.shop.data.get() ) : vitals.shop.data.object; 	   
-            var data = vitals.shop.data.object;
+            var items = vitals.shop.data.items; 	   
+            var data = ( yootil.is_json( vitals.shop.data.get() ) )? $.parseJSON( vitals.shop.data.get() ) : vitals.shop.data.object;
 			for( i=0; i<items.length; i++){ 
              	if( items[i].item_id == item ){
                  	if( pixeldepth.monetary.get() >= (items[i].cost_of_item * amount) ){

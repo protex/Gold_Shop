@@ -1,8 +1,7 @@
         
         give: function( user , give_item , amount , inif ){
             if( yootil.is_json( vitals.shop.data.get( user ) ) ){
-            	vitals.shop.data.object = $.parseJSON( vitals.shop.data.get(user) );
-                var data = vitals.shop.data.object;
+                var data = $.parseJSON( vitals.shop.data.get(user) );
                 var items = vitals.shop.data.items;
                 for( i=0; i<items.length; i++ ){
                  	if( items[i].item_id == give_item ){

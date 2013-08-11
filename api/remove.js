@@ -1,7 +1,6 @@
         
         remove: function( user , return_item , amount , given , inif ){
-            vitals.shop.data.object = $.parseJSON( vitals.shop.data.get(user) );
-            var data = vitals.shop.data.object;
+            var data = $.parseJSON( vitals.shop.data.get(user) );
             var items = vitals.shop.data.items;
             var possessions = ( given )? data.r : data.b;  
             if( vitals.shop.find_amount( possessions , return_item ).length >= amount ){

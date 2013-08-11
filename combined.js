@@ -3,10 +3,10 @@ if( typeof vitals == "undefined" ){
 }
 
 (function( $ ) {
-  $.fn.rightClick = function(method) {
+  $.fn.rightClick = function( method ) {
       
-    $(this).mousedown(function(e) {
-        if (e.which === 3) {
+    $(this).mousedown(function( e ) {
+        if( e.which === 3 ) {
             e.preventDefault();
             method();
         }
@@ -15,18 +15,21 @@ if( typeof vitals == "undefined" ){
   };
 })( jQuery );
 
-if( proboards.plugin.get('gold_shop').settings.items_json != '' && proboards.plugin.get('gold_shop').settings.items_json != "undefined" ){
-    if( JSON.stringify(proboards.plugin.get('gold_shop').settings.items) == "[]" ){
-    	proboards.plugin.get('gold_shop').settings.items = $.parseJSON( proboards.plugin.get('gold_shop').settings.items_json );
-    }else{
-        var old = $.parseJSON( proboards.plugin.get('gold_shop').settings.items_json );
-        var nw = proboards.plugin.get('gold_shop').settings.items;
-     	proboards.plugin.get('gold_shop').settings.items = old.concat(nw);
-    }
+if( yootil.is_json( proboards.plugin.get('gold_shop').settings.json ) ){
+	if( JSON.stringify( proboards.plugin.get('gold_shop').settings.items ) == "[]" ){
+		proboards.plugin.get('gold_shop').settings.items = $.parseJSON( proboards.plugin.get('gold_shop').settings.json );
+	}else{
+		var old = $.parseJSON( proboards.plugin.get('gold_shop').settings.json );
+		var nw = proboards.plugin.get('gold_shop').settings.items;
+		proboards.plugin.get('gold_shop').settings.items = old.concat(nw);
+	}
 }
 
 $(document).ready(function(){
 	vitals.shop.init();
+	if( proboards.plugin.get('gold_shop').settings.pbey_enabled == 'true' ){
+		vitals.pBey.init();
+	}
 });
 vitals.shop = (function(){
    
@@ -85,7 +88,7 @@ vitals.shop = (function(){
         return objects;
         },
         init: function(){
-            yootil.create.page("?shop?items", "Shop");
+            yootil.create.page(/\?shop\?items/, "Shop");
 			vitals.shop.data.shop_items = ( yootil.is_json( vitals.shop.data.get() ) )? $.parseJSON( vitals.shop.data.get() ) : vitals.shop.data.object;
             vitals.shop.init_shop();
             if( proboards.data('route').name == 'user' || proboards.data('route').name == 'current_user' || proboards.data('route').name == 'edit_user_personal' ){
@@ -95,7 +98,7 @@ vitals.shop = (function(){
         init_items: function(){
           	if( location.href.match(/\?shop\?items/) ){
                 yootil.create.nav_branch('/\?shop?items/','Items & Costs');
-                shop_catagories = [];
+                shop_categories = [];
                 var items = vitals.shop.data.items;
                 var table_html = '<table class="list" role="grid">' +
                                     '<thead>' +
@@ -110,19 +113,19 @@ vitals.shop = (function(){
                                 '</table>';
 				var cats = proboards.plugin.get('gold_shop').settings.catagories;
                 for( i=0; i<cats.length; i++){
-                 	shop_catagories.push( cats[i].catagory );  
+                 	shop_categories.push( cats[i].catagory );  
                 }
-                for( i=0; i<shop_catagories.length; i++ ){
-                	if( $('.shop-catagory').length < 1 ){
-                        $('.shop-welcome').after('<div class="container"><div onclick="$(this).siblings().first().toggle()" style="cursor: pointer" class="shop-catagory-first shop-catagory title-bar"><h1 class="catagory-title">' + shop_catagories[i] +'</h1></div><div style="display: none" class="content cap-bottom">' + table_html + '</div></div>');
+                for( i=0; i<shop_categories.length; i++ ){
+                	if( $('.shop-category').length < 1 ){
+                        $('.shop-welcome').after('<div class="container"><div onclick="$(this).siblings().first().toggle()" style="cursor: pointer" class="shop-category-first shop-category title-bar"><h1 class="category-title">' + shop_categories[i] +'</h1></div><div style="display: none" class="content cap-bottom">' + table_html + '</div></div>');
                     } 
                     else{
-                        $('.shop-catagory:last').parent().after('<div class="container"><div onclick="$(this).siblings().first().toggle()" style="cursor: pointer" class="shop-catagory title-bar"><h1 class="catagory-title">' + shop_catagories[i] +'</h1></div><div style="display: none" class="content cap-bottom">' + table_html + '</div></div>');	   
+                        $('.shop-category:last').parent().after('<div class="container"><div onclick="$(this).siblings().first().toggle()" style="cursor: pointer" class="shop-category title-bar"><h1 class="category-title">' + shop_categories[i] +'</h1></div><div style="display: none" class="content cap-bottom">' + table_html + '</div></div>');	   
                     }
                 }
                 for( i=0; i<items.length; i++){
                     var item_ = items[i].item_id;
-                    $('.shop-catagory').each(function(){
+                    $('.shop-category').each(function(){
                      	if( $(this).text() == items[i].item_catagory ){
                             $(this).parent().children().last().children().first().children().last().append('<tr class="shelf board item"><td class="icon"></td><td class="main"></td><td class="latest last"></td></tr>');
                             $(this).parent().children().last().children().first().children().last().children().last().children().first().next().attr('item-number', items[i].item_id ).click(function(){
@@ -148,7 +151,7 @@ vitals.shop = (function(){
                                     }
                                 ); 
                             });
-                         	$(this).parent().children().last().children().first().children().last().children().last().children().first().html('<img src=' + items[i].image_of_item +'></img>'); 
+                         	$(this).parent().children().last().children().first().children().last().children().last().children().first().html('<img src="' + items[i].image_of_item +'"></img>').attr('title' , ( items[i].item_name != "undefined" && items[i].item_name != "" )? items[i].item_name : ''); 
                             $(this).parent().children().last().children().first().children().last().children().last().children().first().next().html( items[i].description );
                             $(this).parent().children().last().children().first().children().last().children().last().children().last().html( '<center>' + pixeldepth.monetary.settings.money_symbol + items[i].cost_of_item + ' | ' + ((items[i].amount == '')? '&infin;' : items[i].amount) + ' | ' + items[i].item_id + '</center>' );
                         }
@@ -187,7 +190,7 @@ vitals.shop = (function(){
         
         init_profile_view: function(){
             var text_size = (proboards.plugin.get('gold_shop').settings.profile_page_text_size == "")? 6 : proboards.plugin.get('gold_shop').settings.profile_page_text_size;
-            var html = '<div class="content-box center-col">'
+            var html = '<div class="content-box center-col" id="shelf">'
                 html += '<table>';
             	html += '<tr><td width="100%"><center><font size="' + text_size + '">Shop Items</font></center></td></tr>';
                 html += '<tr><td id="display"></td></tr>';
@@ -201,29 +204,47 @@ vitals.shop = (function(){
             ($('.status-input').length > 0 )? $('#center-column').children().first().next().after(html) : $('#center-column').children().first().after(html);
             for( i=0; i<display_items.length; i++){
                 for( x=0; x<items.length; x++){
+					var sliced = '';
                     var description = items[x].description;
+					if( description.length > 20 ){
+						sliced = description.slice(0 , 100);
+						sliced = sliced.slice(0 , sliced.lastIndexOf(' ') ) + '... (Right click to view more)';
+					}
                     if( display_items[i]['#'] == items[x].item_id ){
-                     	$('#display').append('<img title="' + description + '" style="max-height: 100px; max-width: 100px" class="' + items[x].item_id + '" src=' + items[x].image_of_item + '></img>');
+                     	$('#display').append('<img title="' + ( ( sliced == "" )? description : sliced ) + '" style="max-height: 100px; max-width: 100px" class="' + items[x].item_id + '" src=' + items[x].image_of_item + '></img>');
+						var id = items[x].item_id;
+						var name =  ( items[x].item_name != 'undefined' )? items[x].item_name : '';
+						$('.' + items[x].item_id).rightClick(function(){
+							proboards.alert( 'Name: ' + name + '<br /><br />' + 'Description: ' + items[x].description + '<br /><br />' + 'ID: ' + id );
+						});	
                     }
                 }
             }
             for( i=0; i<display_recieved.length; i++){
                 for( x=0; x<items.length; x++){
+					var sliced = '';
                     var description = items[x].description;
+					if( description.length > 20 ){
+						sliced = description.slice(0 , 100);
+						sliced = sliced.slice(0 , sliced.lastIndexOf(' ') ) + '...';
+					}
                     if( display_recieved[i]['#'] == items[x].item_id ){
-                     	$('#display').append('<img title="' + description + '" style="max-height: 100px; max-width: 100px" class="' + items[x].item_id + '" src=' + items[x].image_of_item + '></img>');
+                     	$('#display').append('<img title="' + ( ( sliced == "" )? description : sliced ) + '" style="max-height: 100px; max-width: 100px" class="' + items[x].item_id + '" src=' + items[x].image_of_item + '></img>');
+						$('.' + items[x].item_id).rightClick(function(){
+							alert('works');
+						});
                     }
                 }
             }
             for( i=0; i<items.length; i++){
-                $('.' + items[i].item_id + ':last').attr('title', "Description: " + $('.' + items[i].item_id + ':last').prop('title') + "\n" + "Amount: " + $('.' + items[i].item_id).length + "\n" + "Bought: " + vitals.shop.find_amount( display_items , items[i].item_id ).length + "\n" + "Given: " + vitals.shop.find_amount( display_recieved , items[i].item_id ).length );
+                $('.' + items[i].item_id + ':last').attr('title', "Name: " + items[i].item_name + '\n' + "Description: " + $('.' + items[i].item_id + ':last').prop('title') + "\n" + "Amount: " + $('.' + items[i].item_id).length + "\n" + "Bought: " + vitals.shop.find_amount( display_items , items[i].item_id ).length + "\n" + "Given: " + vitals.shop.find_amount( display_recieved , items[i].item_id ).length + "\n" + "ID: " + items[i].item_id );
                 if( $('.'+items[i].item_id).length > 1 ){
-                    for( x=$('.'+items[i].item_id).length; x > 1; x-- ){
-                        $('.'+items[i].item_id+':first').remove();
+                    for( x=$('#shelf .'+items[i].item_id).length; x > 1; x-- ){
+                        $('#shelf .'+items[i].item_id+':first').remove();
                     }
                 }
             }
-			if( !location.href.match(proboards.data('user').url) ){
+			if( proboards.data('route').name == "user" ){
                 $("[href='/conversation/new/" + location.href.split('/user/')[1] +"']").before('<a class="button" href="javascript:void(0)" role="button" id="give_item">Give Item</a>');
                 $('#give_item').click(function(){
                     proboards.dialog('give_item_box',
@@ -308,10 +329,9 @@ vitals.shop = (function(){
         },
     }
     
-})();
-vitals.shop.data = {
+})();vitals.shop.data = {	
             
-    items: proboards.plugin.get('gold_shop').settings.items, 
+    items: proboards.plugin.get('gold_shop').settings.items,
     
     set: function( x , y ){
         if(x == ""){
@@ -351,9 +371,8 @@ vitals.shop.api = (function(){
 	
     return{        
         buy: function( item , amount ){
-            var items = vitals.shop.data.items;
-            vitals.shop.data.object = ( yootil.is_json( vitals.shop.data.get() ) )? $.parseJSON( vitals.shop.data.get() ) : vitals.shop.data.object; 	   
-            var data = vitals.shop.data.object;
+            var items = vitals.shop.data.items; 	   
+            var data = ( yootil.is_json( vitals.shop.data.get() ) )? $.parseJSON( vitals.shop.data.get() ) : vitals.shop.data.object;
 			for( i=0; i<items.length; i++){ 
              	if( items[i].item_id == item ){
                  	if( pixeldepth.monetary.get() >= (items[i].cost_of_item * amount) ){
@@ -368,8 +387,7 @@ vitals.shop.api = (function(){
         },        
         give: function( user , give_item , amount , inif ){
             if( yootil.is_json( vitals.shop.data.get( user ) ) ){
-            	vitals.shop.data.object = $.parseJSON( vitals.shop.data.get(user) );
-                var data = vitals.shop.data.object;
+                var data = $.parseJSON( vitals.shop.data.get(user) );
                 var items = vitals.shop.data.items;
                 for( i=0; i<items.length; i++ ){
                  	if( items[i].item_id == give_item ){
@@ -418,10 +436,31 @@ vitals.shop.api = (function(){
                     callback(); 
                 }
             }
-        },        
+        },
+		pBey_remove: function( user , pBey_id , shop_only ){
+			object = $.parseJSON( vitals.shop.data.get( vitals.pBey.data_holder ) );
+			pObject = $.parseJSON( vitals.shop.data.get( user ) );
+			if( user == proboards.data('user').id || shop_only ){
+				for( i=0; i<object['i'].length; i++ ){
+					if( object['i'][i]['user'][2] == pBey_id ){
+						object['i'].splice( i , 1 );
+						break;
+					}
+				}
+			}
+			if( !shop_only ){
+				for( i=0; i<pObject['s'].length; i++ ){
+					if( pObject['s'][i]['user'][2] == pBey_id ){
+						pObject['s'].splice( i , 1 )
+						break;
+					}
+				}
+			}
+			vitals.shop.data.set( vitals.pBey.data_holder , JSON.stringify( object ) );
+			vitals.shop.data.set( user , JSON.stringify( pObject ) );
+		},        
         remove: function( user , return_item , amount , given , inif ){
-            vitals.shop.data.object = $.parseJSON( vitals.shop.data.get(user) );
-            var data = vitals.shop.data.object;
+            var data = $.parseJSON( vitals.shop.data.get(user) );
             var items = vitals.shop.data.items;
             var possessions = ( given )? data.r : data.b;  
             if( vitals.shop.find_amount( possessions , return_item ).length >= amount ){
@@ -446,18 +485,29 @@ vitals.shop.api = (function(){
             }else{
                 return false;
             }                     
-        },        
+        },
+		sell: function( user , item , cost ){
+			var object = $.parseJSON( vitals.shop.data.get( proboards.plugin.get('gold_shop').settings.data_holder.toString() ) );
+			var pObject = $.parseJSON( vitals.shop.data.get() );
+			if( vitals.shop.find_amount( pObject['b'] , item ).length >= 1 ){
+				object['i'].push({ user:[ item , cost , object['c'] ] });
+				pObject['s'].push({ user:[ item , cost , object['c'] ] });
+				object['c']++;
+				vitals.shop.data.set( proboards.plugin.get('gold_shop').settings.data_holder.toString() , JSON.stringify( object ) );
+				vitals.shop.data.set( JSON.stringify( pObject ) );
+				vitals.shop.api.remove( proboards.data('user').id , item , 1 );
+			}
+		},        
         _return: function( user , return_item , amount , inif ){
             if( yootil.is_json( vitals.shop.data.get( user ) ) ){
-             	vitals.shop.data.object = $.parseJSON( vitals.shop.data.get(user) );
-                var data = vitals.shop.data.object;
+                var data = $.parseJSON( vitals.shop.data.get(user) );
                 var items = vitals.shop.data.items; 
                 for( x=0; x<items.length; x++ ){
-                    if( return_item == items[x].item_id ){   
+                    if( return_item == items[x].item_id ){  
                         if( items[x].returnable == "true" ){ 
                             if( inif != true ){
+                                pixeldepth.monetary.add( items[x].cost_of_item * parseInt( amount ) * ( ( proboards.plugin.get('gold_shop').settings.retail == "" )? 1 : parseInt( proboards.plugin.get('gold_shop').settings.retail ) ) );  							
                                 vitals.shop.api.remove(user , return_item , amount );
-                                pixeldepth.monetary.add( items[x].cost_of_item * parseInt( ( proboards.plugin.get('gold_shop').settings.retail == "" )? 1 : proboards.plugin.get('gold_shop').settings.retail ) * amount );  
                             }
                             return true;
                             break;

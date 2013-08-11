@@ -1,0 +1,6 @@
+
+vitals.pBey = (function(){
+	
+	return{
+
+	

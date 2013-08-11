@@ -1,7 +1,8 @@
-
 vitals.shop.data = {
+
+	version: {"1.2.9"},
             
-    items: proboards.plugin.get('gold_shop').settings.items, 
+    items: proboards.plugin.get('gold_shop').settings.items,
     
     set: function( x , y ){
         if(x == ""){
