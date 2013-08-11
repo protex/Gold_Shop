@@ -5,6 +5,7 @@
 !_TAG_PROGRAM_NAME	Exuberant Ctags	/unofficial modification/
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.8	/unofficial modification/
+biweek	checkUpdate.js	9;"	variable
 cats	init_items.js	18;"	variable
 day	checkUpdate.js	7;"	variable
 display_items	init_profile_view.js	13;"	variable
@@ -15,9 +16,9 @@ html	init_shop.js	8;"	variable
 items	init_items.js	6;"	variable
 items	init_profile_view.js	10;"	variable
 minute	checkUpdate.js	5;"	variable
-month	checkUpdate.js	9;"	variable
-month3	checkUpdate.js	10;"	variable
-month6	checkUpdate.js	11;"	variable
+month	checkUpdate.js	10;"	variable
+month3	checkUpdate.js	11;"	variable
+month6	checkUpdate.js	12;"	variable
 parse	check_amount.js	5;"	variable
 possessions	check_amount.js	6;"	variable
 table_html	init_items.js	7;"	variable
