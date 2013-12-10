@@ -1,8 +1,10 @@
-vitals.shop.data = {
 
-	version: {"1.2.9"},
+
+vitals.shop.data = {
             
     items: proboards.plugin.get('gold_shop').settings.items,
+
+    categories: proboards.plugin.get('gold_shop').settings.catagories,
     
     set: function( x , y ){
         if(x == ""){
@@ -29,7 +31,7 @@ vitals.shop.data = {
         lb: '',
     },
     
-    shop_items: 0,
+    shopItems: [],
     
     clear: function(){
         proboards.plugin.key('gold_shop').set('');

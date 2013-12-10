@@ -785,6 +785,7 @@ vitals.shop = (function(){
                 items = vitals.shop.data.object.b;
 
             }
+
             // Loop through the items
             for( i = 0; i < items.length; i++ ) {
 

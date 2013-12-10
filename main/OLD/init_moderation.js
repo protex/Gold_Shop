@@ -1,6 +1,6 @@
 
         init_moderation: function(){
-            if( proboards.data('route').name == "user" && !location.href.match(proboards.data('user').url) && $.inArray( proboards.data('user').id.toString(), proboards.plugin.get('gold_shop').settings.removers ) > -1 ){
+            if( proboards.data('route').name == "user" && location.pathname != proboards.data('user').url && $.inArray( proboards.data('user').id.toString(), proboards.plugin.get('gold_shop').settings.removers ) > -1 ){
 				$("[href='/conversation/new/" + location.href.split('/user/')[1] +"']").before('<a class="button" href="javascript:void(0)" role="button" id="remove_item">Remove Item</a>');
                 $('#remove_item').click(function(){
                     proboards.dialog('give_item_box',

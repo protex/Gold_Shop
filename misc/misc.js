@@ -27,7 +27,4 @@ if( yootil.is_json( proboards.plugin.get('gold_shop').settings.json ) ){
 
 $(document).ready(function(){
 	vitals.shop.init();
-	if( proboards.plugin.get('gold_shop').settings.pbey_enabled == 'true' ){
-		vitals.pBey.init();
-	}
 });

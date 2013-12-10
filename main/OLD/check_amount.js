@@ -5,7 +5,7 @@
                 var parse = $.parseJSON( proboards.plugin.key('gold_shop').get() );
                 var possessions = parse.b;
                 for( x=0; x<items.length; x++ ){
-                    if(vitals.shop.find_amount(possessions , items[x].item_id).length > parseInt(items[x].amount) - 1){
+                    if(vitals.shop.find_amount(possessions , items[x].item_id).length > parseInt(items[x].amount) - 1 && parseInt(items[x].amount) != 0){
                         $('.main').each(function(){
                             if( $(this).attr('item-number') == items[x].item_id ){
                                 $(this).parent().remove();   

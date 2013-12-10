@@ -44,3 +44,13 @@ Fixed another category listing bug
 Fixed problem with concating JSON overwrite strings
 [1.2.7]
 Added pBey
+[1.2.8]
+Removed pBey awaiting certain updates from ProBoards
+[1.2.9]
+re-wrote entire plugin
+[1.3.0]
+touch up work, fixes some bugs
+[1.3.1]
+Fixed the "right click to veiw more" functionality
+[1.3.2]
+Made given items re givable

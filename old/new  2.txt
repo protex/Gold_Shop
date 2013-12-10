@@ -1,0 +1,22 @@
+for( i=0; i<display_items.length; i++){ // loop through users items
+    for( x=0; x<items.length; x++){ // loop through shop items
+        var sliced = '';
+        var description = items[x].description;
+        if( description.length > 100 ){
+            // slice off nearest space after 100 characters are removed
+            sliced = description.slice(0 , 100);
+            sliced = sliced.slice(0 , sliced.lastIndexOf(' ') ) + '... (Right click to view more)';
+        }
+        if( display_items[i]['#'] == items[x].item_id ){
+            // check to make sure the item to be displayed and the item in the shop are the same
+            // ---V  Add the item with the sliced description in the title
+            $('#display').append('<img title="' + ( ( sliced == "" )? description : sliced ) + '" style="max-height: 100px; max-width: 100px" class="' + items[x].item_id + '" src=' + items[x].image_of_item + '></img>');
+
+            var id = items[x].item_id;           
+            var name =  ( items[x].item_name != 'undefined' )? items[x].item_name : '';
+            $('.' + items[x].item_id).rightClick(function(){ // alert on right click
+                proboards.alert( 'Name: ' + name + '<br /><br />' + 'Description: ' + description + '<br /><br />' + 'ID: ' + id );
+            });	
+        }
+    }
+}

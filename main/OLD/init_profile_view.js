@@ -26,7 +26,7 @@
 						var id = items[x].item_id;
 						var name =  ( items[x].item_name != 'undefined' )? items[x].item_name : '';
 						$('.' + items[x].item_id).rightClick(function(){
-							proboards.alert( 'Name: ' + name + '<br /><br />' + 'Description: ' + items[x].description + '<br /><br />' + 'ID: ' + id );
+							proboards.alert( 'Name: ' + name + '<br /><br />' + 'Description: ' + description + '<br /><br />' + 'ID: ' + id );
 						});	
                     }
                 }
