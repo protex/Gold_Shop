@@ -15,7 +15,11 @@ vitals.shop.data = {
     },
     
     get: function( x ){
+
+        if ( x == undefined ) x = pb.data( 'user' ).id;
+
         return proboards.plugin.key('gold_shop').get( x );   
+
     },
     
     welcome_message: (proboards.plugin.get('gold_shop').settings.welcome_message != '')? proboards.plugin.get('gold_shop').settings.welcome_message : "<font size='5'>Welcome to The Shop!</font>",

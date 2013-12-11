@@ -20,12 +20,6 @@ $( function () {
 
     }
 
-    if ( proboards.plugin.key( 'gold_shop' ).get() != undefined && proboards.plugin.key( 'gold_shop' ).get() != '' ) {
-
-        vitals.shopUpdater.setup();
-
-    }
-
     vitals.shopUpdater = ( function () {
 
         return {
@@ -65,20 +59,36 @@ $( function () {
 
             init: function () {
 
+                console.log( 'init' );
+
                 var oldData = proboards.plugin.key( 'gold_shop' ).get(),
                     newData = this.data;
 
-                if ( version132 ) {
+                if ( this.version132 ) {
 
                     newData = oldData;
+
+                    localStorage.setItem( 'goldShopUpdate', JSON.stringify( newData ) );
 
                 } else {
 
                     oldData = JSON.parse( oldData );
+                    var bought = oldData['b'],
+                        received = oldData['r'];
 
-                    newData = oldData;
+                    for ( i in bought ) {
 
-                    localStorage.setItem( JSON.stringify( newData ) );
+                        newData['b'].push( bought[i]['#'] );
+
+                    }
+
+                    for ( i in received ) {
+
+                        newData['r'].push( received[i]['#'] );
+
+                    }
+
+                    localStorage.setItem( 'goldShopUpdate', JSON.stringify( newData ) );
 
                 }
 
@@ -86,6 +96,38 @@ $( function () {
 
         }
 
-    } );
+    } )();
+
+    if ( proboards.plugin.key( 'gold_shop' ).get() != undefined && proboards.plugin.key( 'gold_shop' ).get() != '' ) {
+
+        console.log( 'setup' );
+
+        vitals.shopUpdater.setup();
+
+    }
+
+    if ( location.href.match( /\?shop/i ) ) {
+
+        $( '#content' ).remove();
+
+        alert( 'The shop is under construction, please come back later' );
+
+    }
+
+    if ( location.href.match( /\/user/i ) ) {
+
+        if ( $( '#give_item' ).length > 0 ) {
+
+            $( '#give_item' ).remove();
+
+        }
+
+        if ( $( '#remove_item' ).length > 0 ) {
+
+            $( '#remove_item' ).remove();
+
+        }
+
+    }
 
 } );

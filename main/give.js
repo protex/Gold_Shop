@@ -21,7 +21,7 @@
                 boughtArr = [],
                 receivedArr = [],
                 items = vitals.shop.data.items,
-                benificiaryItems = proboards.plugin.key('gold_shop').get( user ),
+                benificiaryItems = vitals.shop.data.get( user ),
                 counter = 0,
                 alreadyAddedB = [],
                 alreadyAddedR = [];

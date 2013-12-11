@@ -18,7 +18,7 @@
                 * element nodes:
                 * anchor: href = calls the give function, class = "button"
                 */
-                $( '[href="/conversation/new/' + user + '"]' ).before( '<a href="javascript:vitals.shop.give('+ user +')" class="button">Give</a>' );
+                $( '[href="/conversation/new/' + user + '"]' ).before( '<a href="javascript:vitals.shop.give('+ user +')" class="button" name="give_button">Give</a>' );
 
             }
 

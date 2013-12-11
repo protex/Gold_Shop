@@ -11,13 +11,13 @@
             yootil.bar.add("/user?shop", pb.plugin.get('gold_shop').images.shop_20x20, "Shop", "vGoldShop");
 
             // check if there is existing data
-            if ( pb.plugin.key( 'gold_shop' ).get() !== "" && pb.plugin.key( 'gold_shop' ).get() != undefined ) {
+            if ( vitals.shop.data.get() !== "" && vitals.shop.data.get() != undefined ) {
 
                 // check if the existing data can be stringified
-                if( !yootil.is_json( pb.plugin.key( 'gold_shop' ).get() ) ) {
+                if( !yootil.is_json( vitals.shop.data.get() ) ) {
 
                     // Set the local variable for easy access to user data
-                    vitals.shop.data.object = pb.plugin.key( 'gold_shop' ).get();
+                    vitals.shop.data.object = vitals.shop.data.get();
 
                     // Set the local variable for items so the current users bought items are easily accessable
                     vitals.shop.data.shopItems = vitals.shop.data.object.b;
@@ -26,7 +26,7 @@
                 } else {
 
                     // parse the data and create two empty arrays
-                    var data = $.parseJSON( pb.plugin.key( 'gold_shop' ).get() ),
+                    var data = $.parseJSON( vitals.shop.data.get() ),
                         bought = [],
                         recieved = [];
 

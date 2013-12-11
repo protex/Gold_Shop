@@ -1,56 +1,87 @@
-[1.0.1]
-Fixed a bug
-[1.0.2]
-Changed the amount "0" to equal "0" and not infinity.
-[1.0.3]
-Fixed the match vs. "==" category bug.
-[1.0.4]
-Fixed threads with "shop" in their URL's not showing up
-[1.0.5]
-Made the categories aromatically collapsed
-[1.1.0]
-Added an api
-[1.1.1]
-Added an function that will fire when items are bought
-[1.1.2]
-Added a remove function
-[1.1.3]
-Added a return function
-[1.1.4]
-Added a give function
-[1.1.5]
-Added a JSON overwrite for people updating the plugin
-[1.1.6]
-Fixed a bug
-[1.1.7]
-Added a buy function: vitals.shop.api.buy( item , amount );
-[1.1.8]
-Made the "Shop Items" text on the profile page resizable 
-[1.1.9]
-Revised buy() function
-[1.2.0]
-Fixed category listing problem
-[1.2.1]
-Revised JSON overwrite so users could also add things via the normal way
-[1.2.2]
-Added a moderation button so certain users can remove items from users
-[1.2.3]
-Fixed a bug with category listing
-[1.2.4]
-Fixed a bug with the remove function
-[1.2.5]
-Fixed another category listing bug
-[1.2.6]
-Fixed problem with concating JSON overwrite strings
-[1.2.7]
-Added pBey
+[2.0.4]
+Did some prep work for the update to a global forum key
+[2.0.3]
+Made given items re givable
+[2.0.2]
+Fixed the "right click to veiw more" functionality
+[2.0.1]
+touch up work, fixes some bugs
+[2.0.0]
+re-wrote entire plugin
 [1.2.8]
 Removed pBey awaiting certain updates from ProBoards
-[1.2.9]
-re-wrote entire plugin
-[1.3.0]
-touch up work, fixes some bugs
-[1.3.1]
-Fixed the "right click to veiw more" functionality
-[1.3.2]
-Made given items re givable
+[1.2.7]
+Added pBey
+[1.2.6]
+Fixed problem with concating JSON overwrite strings
+[1.2.5]
+Fixed another category listing bug
+[1.2.4]
+Fixed a bug with the remove function
+[1.2.3]
+Fixed a bug with category listing
+[1.2.2]
+Added a moderation button so certain users can remove items from users
+[1.2.1]
+Revised JSON overwrite so users could also add things via the normal way
+[1.2.0]
+Fixed category listing problem
+[1.1.9]
+Revised buy() function
+[1.1.8]
+Made the "Shop Items" text on the profile page resizable 
+[1.1.7]
+Added a buy function: vitals.shop.api.buy( item , amount );
+[1.1.6]
+Fixed a bug
+[1.1.5]
+Added a JSON overwrite for people updating the plugin
+[1.1.4]
+Added a give function
+[1.1.3]
+Added a return function
+[1.1.2]
+Added a remove function
+[1.1.1]
+Added an function that will fire when items are bought
+[1.1.0]
+Added an api
+[1.0.5]
+Made the categories aromatically collapsed
+[1.0.4]
+Fixed threads with "shop" in their URL's not showing up
+[1.0.3]
+Fixed the match vs. "==" category bug.
+[1.0.2]
+Changed the amount "0" to equal "0" and not infinity.
+[1.0.1]
+Fixed a bug
+[1.0.0]
+Initial Release
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

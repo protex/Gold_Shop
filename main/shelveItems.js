@@ -14,7 +14,7 @@
             * items: a shortcut to the items stored in vitals.shop.data
             */
             var user = ( pb.data( 'route' ).name == "current_user" ) ? pb.data( 'user' ).id : location.href.split( '/user/' )[1],
-                data = proboards.plugin.key( 'gold_shop' ).get( user ),
+                data = vitals.shop.data.get( user ),
                 items = vitals.shop.data.items;
 
             // Check if the user has data
