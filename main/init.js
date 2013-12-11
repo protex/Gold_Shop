@@ -3,7 +3,7 @@
         /*
         * Function: init
         * purpose: do some preliminary stuff and then call the first functions that create the shop etc.
-        * variabls: none
+        * variables: none
         */
         init: function () {
 
