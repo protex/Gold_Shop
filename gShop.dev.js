@@ -637,7 +637,7 @@ vitals.shop = (function(){
                     for( i = 0; i < data.r.length; i++ ) {
 
                         // push all the old recieved data into the "recieved" array
-                        recieved.push( data.b[i]['#'] );
+                        recieved.push( data.r[i]['#'] );
 
                     }
 
