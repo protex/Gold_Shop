@@ -1,0 +1,8 @@
+/*******************************************
+* Copyright (c) Protex Codes               *
+* (protex.boards.net)                      *
+* 2013 all rights reserved                 *
+* Not to be redistributed                  *
+* http://support.proboards.com/user/173855 *
+********************************************/
+

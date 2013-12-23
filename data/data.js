@@ -4,7 +4,7 @@ vitals.shop.data = {
             
     items: proboards.plugin.get('gold_shop').settings.items,
 
-    categories: proboards.plugin.get('gold_shop').settings.catagories,
+    catagories: proboards.plugin.get('gold_shop').settings.catagories,
     
     set: function( x , y ){
         if(x == ""){

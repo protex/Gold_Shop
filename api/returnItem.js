@@ -26,7 +26,7 @@
                         'Confirm': function () {
 
                             // Get the number that the user would like to return 
-                            var returnAmount = $( '#retern-amount' ).val();
+                            var returnAmount = $( '#return-amount' ).val();
 
                             // Check to make sure that they gave a real item id
                             if ( vitals.shop.isItem( id ) ) {
@@ -42,6 +42,11 @@
 
                                         // Refund the money back to hsi wallet
                                         addMoney( id, returnAmount ); 
+
+                                        $( document ).trigger( 'returnComplete' );
+
+                                        // close the dialog
+                                        $( this ).dialog( 'close' );
                                         
                                         // If the user doesn't have the ammount he wants to return
                                     } else {
@@ -84,10 +89,10 @@
             ); 
 
             /*
-            local function: isReturnable
-            purpose: Check if an item can be returned
-            variabls: 
-            item = the id of the item in question
+            * local function: isReturnable
+            * purpose: Check if an item can be returned
+            * variabls: 
+            * item = the id of the item in question
             */
             function isReturnable( item ) {
 
@@ -128,6 +133,8 @@
             * amount = the amount being returned
             */
             function addMoney ( item, amount ) {
+
+                var retail = ( proboards.plugin.get( 'gold_shop' ).settings.retail == "" )? 1:proboards.plugin.get( 'gold_shop' ).settings.retail;
 
                 // Shortcut to shop items stored in vitals.shop.data
                 var items = vitals.shop.data.items;

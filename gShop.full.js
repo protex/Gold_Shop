@@ -1,3 +1,11 @@
+/*******************************************
+* Copyright (c) Protex Codes               *
+* (protex.boards.net)                      *
+* 2013 all rights reserved                 *
+* Not to be redistributed                  *
+* http://support.proboards.com/user/173855 *
+********************************************/
+
 if( typeof vitals == "undefined" ){
     vitals = {};
 }
@@ -35,32 +43,26 @@ vitals.shop = (function(){
 
         addItems: function () {
 
-            Variables:
-            items: Shortcut to items stored in vitals.shop.data
-            categories: shorctut to categories stored in vitals.shop.data
-            data: users data stored in vitals.shop.data
             var items = vitals.shop.data.items,
-                categories = vitals.shop.data.categories,
+                catagories = vitals.shop.data.catagories,
                 data = vitals.shop.data.object;
 
-            for ( i = 0; i < categories.length; i++ ) {
+            for ( i = 0; i < catagories.length; i++ ) {
 
                 for ( x = 0; x < items.length; x++ ) {
 
-                    if ( categories[i].catagory == items[x].item_catagory ) {  
-                        
-                        var html = '';
-                            html += '<tr class="item">';
-                            html += '<td title="' + items[x].item_name + '" class="picture"><img style="max-width: 200px; max-hieght: 200px; display:block; margin-left: auto; margin-right: auto;" src="' + items[x].image_of_item + '" /></td>';
-                            html += '<td class="description">' + items[x].description + '</td>';
-                            html += '<td style="text-align: center;" class="cost">' + items[x].cost_of_item + '</td>';
-                            html += '<td style="text-align: center;" class="available" id="available-' + items[x].item_id +'">' + vitals.shop.recount( items[x].item_id ) + '</td>';
-                            html += '<td style="text-align: center;" class="id">' + items[x].item_id + '</td>';
-                            html += '<td><a href="javascript:vitals.shop.buyItem(' + items[x].item_id + ')" role="button" class="button">Buy</a></td>';
-                            html += ( items[x].returnable == "true" )? '<td><a href="javascript:vitals.shop.returnItem(' + items[x].item_id + ')" role="button" class="button">Return</a></td>' : '<td><a href="javascript:void(0)" style="background-color: red;" role="button" class="button">Return</a></td>';
-                            html += '</tr>';
 
-                        $( '#' + i ).append( html );
+
+                    if ( catagories[i].catagory == items[x].item_catagory ) {  
+
+                        var id =  items[x].item_catagory.replace( ' ', '' );
+
+
+                        console.log ( items[x].item_catagory );
+
+                        $( vitals.shop.createItem( items[x].item_name, items[x].image_of_item, items[x].description, items[x].cost_of_item, items[x].item_id, items[x].returnable ) ).appendTo( '#' + id );
+
+                        console.log( i );
 
                     }
 
@@ -233,7 +235,27 @@ vitals.shop = (function(){
                 },
 
 
-        createShelf: function ( title, id ) {
+        createItem: function ( name, image, description, cost, id, returnable ) {
+
+            var html = '';
+            html += '<tr class="item">';
+            html += '<td title="' + name + '" class="picture"><img style="max-width: 200px; max-hieght: 200px; display:block; margin-left: auto; margin-right: auto;" src="' + image + '" /></td>';
+            html += '<td class="description" style="text-align: center">' + description + '</td>';
+            html += '<td style="text-align: center;" class="cost">' + cost + '</td>';
+            html += '<td style="text-align: center;" class="available" id="available-' + id +'">' + vitals.shop.recount( id ) + '</td>';
+            html += '<td style="text-align: center;" class="id">' + id + '</td>';
+            html += '<td><a href="javascript:vitals.shop.officialBuyItem(\'' + id + '\')" role="button" class="button">Buy</a></td>';
+            html += ( returnable == "true" )? '<td><a href="javascript:vitals.shop.officialReturnItem(\'' + id + '\')" role="button" class="button">Return</a></td>' : '<td><a href="javascript:void(0)" style="background-color: red;" role="button" class="button">Return</a></td>';
+            html += '</tr>';
+
+            return $( html );
+
+        },
+
+
+        createShelf: function ( title ) {
+
+            var id = title.replace( ' ', '' );
 
             var html = "";
             html += '<div class="container category-' + title +'">';
@@ -277,15 +299,745 @@ vitals.shop = (function(){
 
         },
 
+        hasAmount: function ( item, amount, received, user ) {
+
+            var items,
+                count = 0;
+
+            if ( received ) {
+
+                if ( user == undefined || user == "" ) {
+
+                    items = vitals.shop.data.object.r;
+
+                } else {
+
+                    items = vitals.shop.data.get( user ).r;
+
+                }
+
+            } else {
+
+                if ( user == undefined || user == "" ) {
+
+                    items = vitals.shop.data.object.b;
+
+                } else {
+                    
+                    items = vitals.shop.data.get( user ).b;
+
+                }
+
+            }
+
+            for( i = 0; i < items.length; i++ ) {
+
+                if( items[i] == item ) count++;
+                
+            }
+
+            if ( count >= amount ) {
+
+                return true
+
+            } else {
+
+                return false;
+
+            }
+
+        },
+
+        removeItems: function ( item, amount, received, user ) {
+
+            var items,
+                count = 0;
+
+            if ( received ) {
+
+                if ( user == undefined || user == "" ) {
+
+                    items = vitals.shop.data.object.r;
+
+                } else {
+
+                    items = vitals.shop.data.get( user ).r;
+
+                }
+
+            } else {
+
+                if ( user == undefined || user == "" ) {
+
+                    items = vitals.shop.data.object.b;
+
+                } else {
+                    
+                    items = vitals.shop.data.get( user ).b;
+
+                }
+
+            }
+
+            var loops = items.length;
+
+            for( i = 0; i < loops; i++ ) {
+
+                if ( count != amount ) {
+
+                    if( items[i - count] == item ) {
+
+                        items.splice( i - count, 1 );
+
+                        count++;
+
+                    }
+
+                } else {
+
+                    break;
+
+                }
+                
+            }
+
+            proboards.plugin.key( 'gold_shop' ).set( vitals.shop.data.object );
+
+        },
+
+        init: function () {
+
+            yootil.bar.add("/user?shop", pb.plugin.get('gold_shop').images.shop_20x20, "Shop", "vGoldShop");
+
+            if ( vitals.shop.data.get() !== "" && vitals.shop.data.get() != undefined ) {
+
+                if( !yootil.is_json( vitals.shop.data.get() ) ) {
+
+                    vitals.shop.data.object = vitals.shop.data.get();
+
+                    vitals.shop.data.shopItems = vitals.shop.data.object.b;
+
+                } else {
+
+                    var data = $.parseJSON( vitals.shop.data.get() ),
+                        bought = [],
+                        recieved = [];
+
+                    for( i = 0; i < data.b.length; i++ ){
+
+                        bought.push( data.b[i]['#'] );
+
+                    }
+
+                    data.b = bought;
+
+                    for( i = 0; i < data.r.length; i++ ) {
+
+                        recieved.push( data.b[i]['#'] );
+
+                    }
+
+                    data.r = recieved;
+
+                    vitals.shop.data.object = data;
+
+                    vitals.shop.data.shopItems = vitals.shop.data.object.b;
+
+                }
+
+            } 
+
+            if ( pb.data('route').name == "current_user" && location.href.match(/\?shop/) ) {
+
+                this.initShopPage();
+
+            }
+
+            if ( pb.data( 'route' ).name == "current_user" || pb.data( 'route' ).name == "user" ) {
+
+                if ( !location.href.match(/\?shop/) ) {
+
+                    this.initProfile();
+
+                    if ( pb.data('route') != "current_user" ) {
+
+                        this.initProfileGive();
+
+                    }
+
+                }
+
+            }
+
+        },
+
+
+        initProfile: function () {
+
+            var html = '';
+                html += '<div class="content-box center-col">';
+                html += '<table id="shop-items">';
+                html += '<tbody>';
+                html += '<tr>';
+                html += '<td style="text-align: center"><font size="' + ( ( pb.plugin.get('gold_shop').settings.profile_page_text_size ==  "" )? 6: pb.plugin.get('gold_shop').settings.profile_page_text_size ) + '">Items</font></td>';
+                html += '</tr>';
+                html += '<tr>';
+                html += '<td id="shelf"></td>';
+                html += '</tr>';
+                html += '</tbody>';
+                html += '</table>';
+                html += '</div>';
+
+            $( '#center-column' ).children().last().prev().after( html );
+
+            vitals.shop.shelveItems();
+
+        },
+
+        initProfileGive: function () {
+
+            var user = location.href.split( "/user/" )[1];
+
+            if ( user != pb.data('user').id ) {
+
+                $( '[href="/conversation/new/' + user + '"]' ).before( '<a href="javascript:vitals.shop.officialGive(\''+ user +'\')" class="button" name="give_button">Give</a>' );
+
+            }
+
+            if ( $.inArray( pb.data( 'user' ).id.toString(), pb.plugin.get('gold_shop').settings.removers ) > -1 ) {
+
+                $( '[href="/conversation/new/' + user + '"]' ).before( '<a href="javascript:vitals.shop.officialRemoveItem(\''+ user +'\')" class="button" name="remove_button">Remove</a>' );
+
+            }
+
+        },
+
+        initShelves: function () {
+
+            var catagories = vitals.shop.data.catagories;
+
+            for( i = 0; i < catagories.length; i++ ) {
+
+                this.createShelf( catagories[i].catagory ).appendTo( '#content' );
+
+            }
+
+        },
+
+        initShopPage: function () {
+
+            yootil.create.page(/\?shop/, "Shop");
+
+            yootil.create.nav_branch("/user\?shop", "Shop");
+
+            $('.state-active:first').attr('class','');
+
+            $('title:first').text('Shop | Items & Costs');
+
+            var html = "";
+            html += '<div class="container shop-welcome">';
+            html += '<div class="title-bar"><h1>The Shop</h1></div>';
+            html += '<div id="welcome-message" class="content cap-bottom"><center>' + vitals.shop.data.welcome_message + '</center></div>';
+            html += '</div>';
+
+            $( '#content' ).append( html );
+
+            vitals.shop.initShelves();
+
+            vitals.shop.addItems();
+
+        },
+
+        isItem: function ( item ) {
+
+            var items = vitals.shop.data.items;
+
+            for ( i = 0; i < items.length; i++ ) {
+
+                if ( items[i].item_id == item ) {
+
+                    return true;
+
+                }
+
+            }
+
+            return false;
+
+        },
+
+
+        officialBuyItem: function ( id ) {
+
+            vitals.shop.api.buyItem( id );
+
+            $( document ).on( 'buyComplete', function () {
+
+                $( '.item' ).remove();
+
+                vitals.shop.addItems();
+
+            } );
+
+        },
+
+
+        officialGive: function ( user ) {
+
+            vitals.shop.api.give( user );
+
+            $( document ).on( 'giveComplete', function () {
+
+                $( '#shelf' ).children().remove();
+
+                vitals.shop.shelveItems();
+
+            } );
+
+        },
+
+        officialRemoveItem: function ( user ) {
+
+            vitals.shop.api.removeItem( user );
+
+            $( document ).on( 'removeComplete', function () {
+
+                $( '#shelf' ).children().remove();
+
+                vitals.shop.shelveItems();
+
+            } );
+
+        },
+
+
+        officialReturnItem: function ( id ) {
+
+            vitals.shop.api.returnItem( id );
+
+            $( document ).on( 'returnComplete', function () {
+
+                $( '.item' ).remove();
+
+                vitals.shop.addItems();
+
+            } );
+
+        },
+        
+        recount: function ( item ) {
+
+            var items = vitals.shop.data.items,
+                data = vitals.shop.data.object;
+
+            for ( j = 0; j < items.length; j++ ) {
+
+                if ( items[j].item_id == item ) {
+
+                    if ( items[j].amount != "" ) {
+
+                        var recalculate = items[j].amount - vitals.shop.find_amount( data.b, item ) - vitals.shop.find_amount( data.r, item );
+
+                        if( parseInt( recalculate ) > 0 ) {
+
+                            return recalculate;
+
+                            break;
+
+                        } else {
+
+                            return 0
+
+                        }
+
+                    } else {
+
+                        return "&infin;";
+
+                        break;
+
+                    }
+
+                }
+
+            }
+
+        },
+
+        shelveItems: function () {
+
+            var user = ( pb.data( 'route' ).name == "current_user" ) ? pb.data( 'user' ).id : location.href.split( '/user/' )[1],
+                data = vitals.shop.data.get( user ),
+                items = vitals.shop.data.items;
+
+            if( yootil.is_json( data ) ) {
+
+                var stuff = $.parseJSON( data ),
+                    bought = [],
+                    recieved = [];
+
+                for( i = 0; i < stuff.b.length; i++ ){
+
+                    bought.push( stuff.b[i]['#'] );
+
+                }
+
+                stuff.b = bought;
+
+                for( d = 0; d < stuff.r.length; d++ ) {
+
+                    recieved.push( stuff.r[d]['#'] );
+
+                }
+
+                stuff.r = recieved;
+
+                data = stuff
+
+            }
+
+            if ( data == undefined ) {
+
+                data = { "b":[], "r":[], "s":[], "lb":"" };
+
+            }
+
+            for ( i = 0; i < data.r.length; i++ ) {
+
+                for ( x = 0; x < items.length; x++ ) {
+
+                    var description = items[x].description,
+                        sliced = "",
+                        name = items[x].item_name;
+
+                    if( description.length > 100 ){
+
+                        sliced = description.slice(0 , 100);
+
+                        sliced = sliced.slice(0 , sliced.lastIndexOf(' ') ) + '... (Click to view more)';
+
+                    }
+
+                    if ( data.r[i] == items[x].item_id ) {
+
+                        $( '#shelf' ).append( '<img style="max-width: 70px; max-hieght: 70px;" class="' + data.r[i] + '" src="' + items[x].image_of_item + '" />' );
+
+                        func = function (){
+
+                            var ac = arguments.callee;
+
+                            proboards.alert( 'Name: ' + ac.dname + '<br /><br />Description: ' + ac.description );
+
+                        }
+
+                        func.dname = name;
+                        func.description = description;
+
+                        $( '.' + items[x].item_id ).click(func);
+
+                        $('.' + items[x].item_id + ':last').attr('title', "Name: " + items[x].item_name + '\n' + "Description: " + ( ( sliced != "" )? sliced: description ) + "\n" + "Amount: " + $('.' + items[x].item_id).length + "\n" + "Bought: " + vitals.shop.find_amount( data.b , items[x].item_id ).length + "\n" + "Given: " + vitals.shop.find_amount( data.r , items[x].item_id ).length + "\n" + "ID: " + items[x].item_id );
+
+                    }
+
+                }
+
+            }
+
+            for ( i = 0; i < data.b.length; i++ ) {
+
+                for ( x = 0; x < items.length; x++ ) {
+
+                    
+                    var description = items[x].description,
+                        sliced = "",
+                        name = items[x].item_name;
+
+                    if( description.length > 20 ){
+
+                        sliced = description.slice(0 , 100);
+
+                        sliced = sliced.slice(0 , sliced.lastIndexOf(' ') ) + '... (Click to view more)';
+
+                    }
+
+                    if ( data.b[i] == items[x].item_id ) {
+
+                        $( '#shelf' ).append( '<img style="max-width: 70px; max-hieght: 70px;" class="' + data.b[i] + '" src="' + items[x].image_of_item + '"></img>' )
+
+                        func = function (){
+                            var ac = arguments.callee;
+                            proboards.alert( 'Name: ' + ac.dname + '<br /><br />Description: ' + ac.description );
+                        }
+                        func.dname = name;
+                        func.description = description;
+                        $( '.' + items[x].item_id ).click(func);
+
+                        $('.' + items[x].item_id + ':last').attr('title', "Name: " + items[x].item_name + '\n' + "Description: " + ( ( sliced != "" )? sliced: description ) + "\n" + "Amount: " + $('.' + items[x].item_id).length + "\n" + "Bought: " + vitals.shop.find_amount( data.b , items[x].item_id ).length + "\n" + "Given: " + vitals.shop.find_amount( data.r , items[x].item_id ).length + "\n" + "ID: " + items[x].item_id );
+
+                    }
+
+                }
+
+            }
+
+            for( i=0; i<items.length; i++){
+
+                if( $('.'+items[i].item_id).length > 1 ){
+
+                    for( x=$('#shelf > .'+items[i].item_id).length; x > 1; x-- ){
+
+                        $('#shelf > .'+items[i].item_id+':first').remove();
+
+                    }
+
+                }
+
+            }
+
+        },
+
+    }
+    
+})();
+
+vitals.shop.data = {
+            
+    items: proboards.plugin.get('gold_shop').settings.items,
+
+    catagories: proboards.plugin.get('gold_shop').settings.catagories,
+    
+    set: function( x , y ){
+        if(x == ""){
+            x = y;
+            y = undefined;
+        }
+        proboards.plugin.key('gold_shop').set( x , y );
+    },
+    
+    get: function( x ){
+
+        if ( x == undefined ) x = pb.data( 'user' ).id;
+
+        return proboards.plugin.key('gold_shop').get( x );   
+
+    },
+    
+    welcome_message: (proboards.plugin.get('gold_shop').settings.welcome_message != '')? proboards.plugin.get('gold_shop').settings.welcome_message : "<font size='5'>Welcome to The Shop!</font>",
+    
+    object: {
+        b: [],
+        s: [],
+        r: [],
+        lb: '',
+    },
+    
+    shopItems: [],
+    
+    clear: function(){
+        proboards.plugin.key('gold_shop').set('');
+    },
+    
+    current_item: '',
+        	
+},
+
+vitals.shop.api = (function(){
+	
+    return{
+
+                buyItem: function ( id, amount, nogui ) {
+
+                    if( amount == undefined ) {
+
+                        amount = 1;
+
+                    }
+
+                    if ( !nogui ) {
+                        proboards.dialog('buy_item_box',
+
+                            {
+
+                                title:'Buy Item',
+
+                                html:'Are you sure you would like to buy this item?<br /><br /><b>Optional: How many?</b><br /><input id="buy-amount" />',
+
+                                buttons: {
+
+                                    'Confirm': function () {
+
+                                        buy();
+
+                                        $( this ).dialog('close');
+            
+                                    },
+
+                                    'Cancel': function () {
+
+                                        $( this ).dialog( 'close' );
+
+                                    },
+
+                                }
+
+                            }
+
+                        );
+
+                    } else {
+
+                        buy();
+
+                    }
+
+                    function buy () {
+
+
+                        if ( !nogui ) {
+
+                            if ( !$( '#buy-amount' ).val().match(/[^0-9]/gi) ) {
+
+                                amount = parseInt( $( '#buy-amount' ).val() );
+
+                            } else { 
+                                pb.window.error( '<i>Gold Shop Error: 103</i><br /><br />The amount you entered is not a valid number!' );
+
+                                return false;
+
+                            }
+
+                        }
+
+                        if ( vitals.shop.isItem( id ) ) {
+
+                            if ( canSubtract( id, amount ) ) {
+
+                                if ( canBuyAmount( id, amount) ) {
+
+                                    completeTransaction( id, amount );
+
+                                    subtractMoney( id, amount );
+
+                                    $( document ).trigger( 'buyComplete' );
+
+                                } else {
+
+                                    pb.window.error( '<i>Gold Shop Error: 102</i><br /><br />You can\'t buy that amount!' );
+
+                                    return false;
+
+                                }
+
+                            } else {
+
+                                pb.window.error( '<i>Gold Shop Error: 101</i><br /><br />You do not have enough money to buy that item!' );
+
+                                return false;
+
+                            }
+
+                        } else {
+
+                            pb.window.error( '<i>Gold Shop Internal Error: 1</i><br /><br />That is not an item!' );
+
+                            return false;
+
+                        }
+
+                    }
+
+                    function canSubtract ( item, number ) {
+
+                        var items = vitals.shop.data.items;
+
+                        for ( i = 0; i < items.length; i++ ) {
+
+                            if ( items[i].item_id == item ) {
+
+                                var money = pixeldepth.monetary.get();
+
+                                var cost = items[i].cost_of_item * number;
+
+                                if ( money - cost >= 0 ) {
+
+                                    return true;
+
+                                } else {
+
+                                    return false;
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                    function subtractMoney ( item, number) {
+
+                        var items = vitals.shop.data.items;
+
+                        for ( i = 0; i < items.length; i++ ) {
+
+                            if ( items[i].item_id == id ) {
+
+                                pixeldepth.monetary.subtract( items[i].cost_of_item * number );
+
+                            }
+
+                        }
+
+                    }
+
+                    function canBuyAmount ( item, number ) {
+
+                        var items = vitals.shop.data.items;
+
+                        for ( i = 0; i < items.length; i++ ) {
+
+                            if ( items[i].item_id == item ) {
+
+                                if ( ( items[i].amount - number ) - vitals.shop.find_amount( vitals.shop.data.object.b.concat( vitals.shop.data.object.r ), item ).length >= 0  || items[i].amount == "" ) {
+
+                                    return true;
+
+                                } else {
+
+                                    return false;
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                    function completeTransaction( item, number ) {
+
+                        for ( i = 0; i < number; i++ ) {
+
+                            vitals.shop.data.object.b.push( id );
+
+                        }
+
+                        proboards.plugin.key( 'gold_shop' ).set( vitals.shop.data.object );
+
+                    }
+
+                },
+
+
         give: function ( user ) {
 
-            var currUserObject = vitals.shop.data.object,
-                bought = currUserObject.b,
-                received = currUserObject.r,
+            var currUserObjectG = vitals.shop.data.object,
+                bought = currUserObjectG.b,
+                received = currUserObjectG.r,
                 boughtArr = [],
                 receivedArr = [],
                 items = vitals.shop.data.items,
-                benificiaryItems = proboards.plugin.key('gold_shop').get( user ),
+                benificiaryItems = vitals.shop.data.get( user ),
                 counter = 0,
                 alreadyAddedB = [],
                 alreadyAddedR = [];
@@ -407,6 +1159,10 @@ vitals.shop = (function(){
 
                                                 proboards.plugin.key('gold_shop').set( user, benificiaryItems );
 
+                                                vitals.shop.data.object = benificiaryItems;
+
+                                                $( document ).trigger( 'giveComplete' );
+
                                                 $( this ).dialog( 'close' );
 
                                             } else {
@@ -464,6 +1220,8 @@ vitals.shop = (function(){
 
                                                 proboards.plugin.key('gold_shop').set( user, benificiaryItems );
 
+                                                $( document ).trigger( 'giveComplete' );
+
                                                 $( this ).dialog( 'close' );
 
                                             } else {
@@ -505,270 +1263,221 @@ vitals.shop = (function(){
 
         },
 
-        hasAmount: function ( item, amount, received ) {
+        removeItem: function ( user ) {
 
-            var items,
-                count = 0;
+            var removiaryItems = vitals.shop.data.get( user ),
+                boughtArr = [],
+                receivedArr = [],
+                items = vitals.shop.data.items,
+                counter = 0,
+                alreadyAddedB = [],
+                alreadyAddedR = [];
 
-            if ( received ) {
+            if ( removiaryItems == undefined || removiaryItems == "" ) {
 
-                items = vitals.shop.data.object.r;
-
-            } else {
-
-                items = vitals.shop.data.object.b;
-
-            }
-
-            for( i = 0; i < items.length; i++ ) {
-
-                if( items[i] == item ) count++;
-                
-            }
-
-            if ( count >= amount ) {
-
-                return true
-
-            } else {
-
-                return false;
+                removiaryItems = { "b":[], "r":[], "s":[], "lb":"" };
 
             }
 
-        },
+            var bought = removiaryItems.b,
+                received = removiaryItems.r;
 
-        removeItems: function ( item, amount, received ) {
+            for ( x = 0; x < bought.length; x++ ) {
 
-            var items,
-                count = 0;
+                for ( i = 0; i < items.length; i++ ) {
 
-            if ( received ) {
+                    if ( items[i].item_id == bought[x] ) {
 
-                items = vitals.shop.data.object.r;
+                        if ( items[i].givable == "true" ) {
 
-            } else {
+                            if ( vitals.shop.find_amount( alreadyAddedB, bought[x] ).length < 1 ) {
 
-                items = vitals.shop.data.object.b;
+                                alreadyAddedB.push( bought[x] );
 
-            }
+                                boughtArr.push( {"id":bought[x], "name":items[i].item_name} );
 
-            for( i = 0; i < items.length; i++ ) {
-
-                if ( count != amount ) {
-
-                    if( items[i] == item ) {
-
-                        items.splice( i, 1 );
-
-                        count++;
-
-                    }
-
-                } else {
-
-                    break;
-
-                }
-                
-            }
-
-            proboards.plugin.key( 'gold_shop' ).set( vitals.shop.data.object );
-
-        },
-
-        init: function () {
-
-            yootil.bar.add("/user?shop", pb.plugin.get('gold_shop').images.shop_20x20, "Shop", "vGoldShop");
-
-            if ( pb.plugin.key( 'gold_shop' ).get() !== "" && pb.plugin.key( 'gold_shop' ).get() != undefined ) {
-
-                if( !yootil.is_json( pb.plugin.key( 'gold_shop' ).get() ) ) {
-
-                    vitals.shop.data.object = pb.plugin.key( 'gold_shop' ).get();
-
-                    vitals.shop.data.shopItems = vitals.shop.data.object.b;
-
-                } else {
-
-                    var data = $.parseJSON( pb.plugin.key( 'gold_shop' ).get() ),
-                        bought = [],
-                        recieved = [];
-
-                    for( i = 0; i < data.b.length; i++ ){
-
-                        bought.push( data.b[i]['#'] );
-
-                    }
-
-                    data.b = bought;
-
-                    for( i = 0; i < data.r.length; i++ ) {
-
-                        recieved.push( data.b[i]['#'] );
-
-                    }
-
-                    data.r = recieved;
-
-                    vitals.shop.data.object = data;
-
-                    vitals.shop.data.shopItems = vitals.shop.data.object.b;
-
-                }
-
-            } 
-
-            if ( pb.data('route').name == "current_user" && location.href.match(/\?shop/) ) {
-
-                this.initShopPage();
-
-            }
-
-            if ( pb.data( 'route' ).name == "current_user" || pb.data( 'route' ).name == "user" ) {
-
-                if ( !location.href.match(/\?shop/) ) {
-
-                    this.initProfile();
-
-                    if ( pb.data('route') != "current_user" ) {
-
-                        this.initProfileGive();
-
-                    }
-
-                }
-
-            }
-
-        },
-
-
-        initProfile: function () {
-
-            var html = '';
-                html += '<div class="content-box center-col">';
-                html += '<table id="shop-items">';
-                html += '<tbody>';
-                html += '<tr>';
-                html += '<td style="text-align: center"><font size="6">Items</font></td>';
-                html += '</tr>';
-                html += '<tr>';
-                html += '<td id="shelf"></td>';
-                html += '</tr>';
-                html += '</tbody>';
-                html += '</table>';
-                html += '</div>';
-
-            $( '.content-box:last' ).prev().after( html );
-
-            this.shelveItems();
-
-        },
-
-        initProfileGive: function () {
-
-            var user = location.href.split( "/user/" )[1];
-
-            if ( user != pb.data('user').id ) {
-
-                $( '[href="/conversation/new/' + user + '"]' ).before( '<a href="javascript:vitals.shop.give('+ user +')" class="button" name="give_button">Give</a>' );
-
-            }
-
-        },
-
-        initShelves: function () {
-
-            var categories = vitals.shop.data.categories;
-
-            for( i = 0; i < categories.length; i++ ) {
-
-                this.createShelf( categories[i].catagory, i ).appendTo( '#content' );
-
-            }
-
-        },
-
-        initShopPage: function () {
-
-            yootil.create.page(/\?shop/, "Shop");
-
-            yootil.create.nav_branch("/user\?shop", "Shop");
-
-            $('.state-active:first').attr('class','');
-
-            $('title:first').text('Shop | Items & Costs');
-
-            var html = "";
-            html += '<div class="container shop-welcome">';
-            html += '<div class="title-bar"><h1>The Shop</h1></div>';
-            html += '<div id="welcome-message" class="content cap-bottom"><center>' + vitals.shop.data.welcome_message + '</center></div>';
-            html += '</div>';
-
-            $( '#content' ).append( html );
-
-            this.initShelves();
-
-            this.addItems();
-
-        },
-
-        isItem: function ( item ) {
-
-            var items = vitals.shop.data.items;
-
-            for ( i = 0; i < items.length; i++ ) {
-
-                if ( items[i].item_id == item ) {
-
-                    return true;
-
-                }
-
-            }
-
-            return false;
-
-        },
-
-        
-        recount: function ( item ) {
-
-            var items = vitals.shop.data.items,
-                data = vitals.shop.data.object;
-
-            for ( i = 0; i < items.length; i++ ) {
-
-                if ( items[i].item_id == item ) {
-
-                    if ( items[i].amount != "" ) {
-
-                        var recalculate = items[i].amount - find_amount( data.b, item ) - find_amount( data.r, item );
-
-                        if( parseInt( recalculate ) > 0 ) {
-
-                            return recalculate;
-
-                            break;
-
-                        } else {
-
-                            return 0
+                            }
 
                         }
 
-                    } else {
+                    }
 
-                        return "&infin;";
+                }
 
-                        break;
+            }
+
+            for ( x = 0; x < received.length; x++ ) {
+
+                for ( i = 0;  i < items.length;  i++) {
+
+                    if ( items[i].item_id == received[x] ) {
+
+                        if ( items[i].givable == "true" ) {
+
+                            if ( vitals.shop.find_amount( alreadyAddedR, received[x] ).length < 1 ) {
+
+                                alreadyAddedR.push( received[x] );
+
+                                receivedArr.push( {"id":received[x], "name":items[i].item_name} );
+
+                            }
+
+                        }
 
                     }
 
                 }
 
             }
+
+            if ( boughtArr.length > 0 ) {
+
+                var boughtOptions = "";
+
+                for ( i = 0; i < boughtArr.length; i++ ) {
+                    boughtOptions += '<option value="' + boughtArr[i].id + '">' + boughtArr[i].name + '</option>';
+
+                }
+
+            }
+
+            if ( receivedArr.length > 0 ) {
+
+                var receivedOptions = "";
+
+                for ( i = 0; i < receivedArr.length; i++ ) {
+
+                    receivedOptions += '<option value="' + receivedArr[i].id + '">' + receivedArr[i].name + '</option>';
+
+                }
+
+            }
+
+            proboards.dialog('remove_item_box',
+
+                {
+
+                    title:'Bought or Given',
+
+                    html:'Would you like to remove a bought or given item?',
+
+                    buttons: {
+
+                        'Bought': function () {
+
+                            $( this ).dialog( 'close' );
+
+                            proboards.dialog('bought_item_box',
+
+                                {
+
+                                    title: 'Remove a bought item',
+
+                                    html: 'Which item would you like to remove?<br /><select id="bought-items-select">' + boughtOptions + '</select><br /><br />How many?<br /><input id="bought-items-amount" />',
+
+                                    buttons: {
+
+                                        'Remove' : function () {
+
+                                            if ( vitals.shop.hasAmount( $( '#bought-items-select' ).val(), $( '#bought-items-amount' ).val(), false, user ) ) {
+
+                                                vitals.shop.removeItems( $( '#bought-items-select' ).val(), $( '#bought-items-amount' ).val(), false, user );
+
+                                                proboards.plugin.key('gold_shop').set( user, removiaryItems );
+
+                                                vitals.shop.data.object = removiaryItems;
+
+                                                $( document ).trigger( 'removeComplete' );
+
+                                                $( this ).dialog( 'close' );
+
+                                            } else {
+
+                                                $( this ).dialog( 'close' );
+
+                                                pb.window.error( '<i>Gold Shop Error 301:</i> <br /><br />Sorry, this user does not have that many of that item' );
+
+                                            }
+
+
+                                        },
+
+                                        'Cancel' : function () {
+
+                                            $( this ).dialog( 'close' );
+
+                                        },
+   
+                                    },
+
+                                }
+
+                            );
+
+                        },
+
+                        'Received': function () {
+
+                            $( this ).dialog( 'close' );
+
+                            proboards.dialog('received_item_box',
+
+                                {
+
+                                    title: 'Remove a received item',
+
+                                    html: 'Which item would you like to remove?<br /><select id="bought-items-select">' + receivedOptions + '</select><br /><br />How many?<br /><input id="bought-items-amount" />',
+
+                                    buttons: {
+
+                                        'Remove' : function () {
+
+                                            if ( vitals.shop.hasAmount( $( '#bought-items-select' ).val(), $( '#bought-items-amount' ).val(), true, user ) ) {
+
+                                                vitals.shop.removeItems( $( '#bought-items-select' ).val(), $( '#bought-items-amount' ).val(), true, user );
+
+                                                proboards.plugin.key('gold_shop').set( user, removiaryItems );
+
+                                                $( document ).trigger( 'removeComplete' );
+
+                                                $( this ).dialog( 'close' );
+
+                                            } else {
+
+                                                $( this ).dialog( 'close' );
+
+                                                pb.window.error( '<i>Gold Shop Error 301:</i> <br /><br />Sorry, this user does not have that many of that item' );
+
+                                            }
+
+
+                                        },
+
+                                        'Cancel' : function () {
+
+                                            $( this ).dialog( 'close' );
+
+                                        },
+   
+                                    },
+
+                                }
+
+                            );
+
+                        },
+
+                        'Cancel': function () {
+
+                            $( this ).dialog( 'close' );
+
+                        },
+
+                    }
+
+                }
+
+            );
 
         },
 
@@ -786,7 +1495,7 @@ vitals.shop = (function(){
 
                         'Confirm': function () {
 
-                            var returnAmount = $( '#retern-amount' ).val();
+                            var returnAmount = $( '#return-amount' ).val();
 
                             if ( vitals.shop.isItem( id ) ) {
 
@@ -797,6 +1506,10 @@ vitals.shop = (function(){
                                         vitals.shop.removeItems( id, returnAmount );
 
                                         addMoney( id, returnAmount ); 
+
+                                        $( document ).trigger( 'returnComplete' );
+
+                                        $( this ).dialog( 'close' );
                                         
                                     } else {
 
@@ -830,10 +1543,6 @@ vitals.shop = (function(){
 
             ); 
 
-            local function: isReturnable
-            purpose: Check if an item can be returned
-            variabls: 
-            item = the id of the item in question
             function isReturnable( item ) {
 
                 var items = vitals.shop.data.items;
@@ -860,6 +1569,8 @@ vitals.shop = (function(){
 
             function addMoney ( item, amount ) {
 
+                var retail = ( proboards.plugin.get( 'gold_shop' ).settings.retail == "" )? 1:proboards.plugin.get( 'gold_shop' ).settings.retail;
+
                 var items = vitals.shop.data.items;
 
                 for ( i = 0; i < items.length; i++ ) {
@@ -874,158 +1585,7 @@ vitals.shop = (function(){
 
             }
 
-        },
-
-        shelveItems: function () {
-
-            var user = ( pb.data( 'route' ).name == "current_user" ) ? pb.data( 'user' ).id : location.href.split( '/user/' )[1],
-                data = proboards.plugin.key( 'gold_shop' ).get( user ),
-                items = vitals.shop.data.items;
-
-            if ( data == undefined ) {
-
-                data = { "b":[], "r":[], "s":[], "lb":"" };
-
-            }
-
-            for ( i = 0; i < data.r.length; i++ ) {
-
-                for ( x = 0; x < items.length; x++ ) {
-
-                    var description = items[x].description,
-                        sliced = "",
-                        name = items[x].item_name;
-
-                    if( description.length > 100 ){
-
-                        sliced = description.slice(0 , 100);
-
-                        sliced = sliced.slice(0 , sliced.lastIndexOf(' ') ) + '... (Click to view more)';
-
-                    }
-
-                    if ( data.r[i] == items[x].item_id ) {
-
-                        $( '#shelf' ).append( '<img style="max-width: 70px; max-hieght: 70px;" class="' + data.r[i] + '" src="' + items[x].image_of_item + '" />' );
-
-                        func = function (){
-
-                            var ac = arguments.callee;
-
-                            proboards.alert( 'Name: ' + ac.dname + '<br /><br />Description: ' + ac.description );
-
-                        }
-
-                        func.dname = name;
-                        func.description = description;
-
-                        $( '.' + items[x].item_id ).click(func);
-
-                        $('.' + items[x].item_id + ':last').attr('title', "Name: " + items[x].item_name + '\n' + "Description: " + ( ( sliced != "" )? sliced: description ) + "\n" + "Amount: " + $('.' + items[x].item_id).length + "\n" + "Bought: " + vitals.shop.find_amount( data.b , items[x].item_id ).length + "\n" + "Given: " + vitals.shop.find_amount( data.r , items[x].item_id ).length + "\n" + "ID: " + items[x].item_id );
-
-                    }
-
-                }
-
-            }
-
-            for ( i = 0; i < data.b.length; i++ ) {
-
-                for ( x = 0; x < items.length; x++ ) {
-
-                    
-                    var description = items[x].description,
-                        sliced = "",
-                        name = items[x].item_name;
-
-                    if( description.length > 20 ){
-
-                        sliced = description.slice(0 , 100);
-
-                        sliced = sliced.slice(0 , sliced.lastIndexOf(' ') ) + '... (Click to view more)';
-
-                    }
-
-                    if ( data.b[i] == items[x].item_id ) {
-
-                        $( '#shelf' ).append( '<img style="max-width: 70px; max-hieght: 70px;" class="' + data.b[i] + '" src="' + items[x].image_of_item + '"></img>' )
-
-                        func = function (){
-                            var ac = arguments.callee;
-                            proboards.alert( 'Name: ' + ac.dname + '<br /><br />Description: ' + ac.description );
-                        }
-                        func.dname = name;
-                        func.description = description;
-                        $( '.' + items[x].item_id ).click(func);
-
-                        $('.' + items[x].item_id + ':last').attr('title', "Name: " + items[x].item_name + '\n' + "Description: " + ( ( sliced != "" )? sliced: description ) + "\n" + "Amount: " + $('.' + items[x].item_id).length + "\n" + "Bought: " + vitals.shop.find_amount( data.b , items[x].item_id ).length + "\n" + "Given: " + vitals.shop.find_amount( data.r , items[x].item_id ).length + "\n" + "ID: " + items[x].item_id );
-
-                    }
-
-                }
-
-            }
-
-            for( i=0; i<items.length; i++){
-
-                if( $('.'+items[i].item_id).length > 1 ){
-
-                    for( x=$('#shelf > .'+items[i].item_id).length; x > 1; x-- ){
-
-                        $('#shelf > .'+items[i].item_id+':first').remove();
-
-                    }
-
-                }
-
-            }
-
-        },
-
-    }
-    
-})();
-
-vitals.shop.data = {
-            
-    items: proboards.plugin.get('gold_shop').settings.items,
-
-    categories: proboards.plugin.get('gold_shop').settings.catagories,
-    
-    set: function( x , y ){
-        if(x == ""){
-            x = y;
-            y = undefined;
-        }
-        proboards.plugin.key('gold_shop').set( x , y );
-    },
-    
-    get: function( x ){
-        return proboards.plugin.key('gold_shop').get( x );   
-    },
-    
-    welcome_message: (proboards.plugin.get('gold_shop').settings.welcome_message != '')? proboards.plugin.get('gold_shop').settings.welcome_message : "<font size='5'>Welcome to The Shop!</font>",
-    
-    object: {
-        b: [],
-        s: [],
-        r: [],
-        lb: '',
-    },
-    
-    shopItems: [],
-    
-    clear: function(){
-        proboards.plugin.key('gold_shop').set('');
-    },
-    
-    current_item: '',
-        	
-},
-
-vitals.shop.api = (function(){
-	
-    return{        
+        },        
     }
     
 })();

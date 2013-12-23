@@ -8,7 +8,7 @@
         * amount = a the amount we are checking
         * received = are we checking received or bought items?
         */
-        hasAmount: function ( item, amount, received ) {
+        hasAmount: function ( item, amount, received, user ) {
 
             var items,
                 count = 0;
@@ -16,14 +16,37 @@
             // Check if the recieved variable was set to tru
             if ( received ) {
 
-                // Set items to be the users recieved items
-                items = vitals.shop.data.object.r;
+                // Check if the user function variable wasn't defined
+                if ( user == undefined || user == "" ) {
+
+                    // Set items to be the current users received items
+                    items = vitals.shop.data.object.r;
+
+                    // if the user function variable was defined
+                } else {
+
+                    // Set items to be the users received
+                    items = vitals.shop.data.get( user ).r;
+
+                }
 
                 // If recieved is not set to true
             } else {
 
-                // Set items to be the users bought items
-                items = vitals.shop.data.object.b;
+                // check if the user function variable wasn't defined
+                if ( user == undefined || user == "" ) {
+
+                    //console.log('correct');
+                    // Set items to be the current users bought items
+                    items = vitals.shop.data.object.b;
+
+                // if the user function variable was defined
+                } else {
+                    
+                    // Set the items to be the users bought items
+                    items = vitals.shop.data.get( user ).b;
+
+                }
 
             }
 
@@ -60,36 +83,59 @@
         * amount = a cthe amount we are remove
         * received = are we removing received or bought items?
         */
-        removeItems: function ( item, amount, received ) {
+        removeItems: function ( item, amount, received, user ) {
 
             var items,
                 count = 0;
 
-            // Check if the received variable was passed as true
             if ( received ) {
 
-                // Set the items to be the users received items
-                items = vitals.shop.data.object.r;
+                // Check if the user function variable wasn't defined
+                if ( user == undefined || user == "" ) {
 
-                // If the received variable wasn't passed as true, or wasn't passed at all
+                    // Set items to be the current users received items
+                    items = vitals.shop.data.object.r;
+
+                    // if the user function variable was defined
+                } else {
+
+                    // Set items to be the users received
+                    items = vitals.shop.data.get( user ).r;
+
+                }
+
+                // If recieved is not set to true
             } else {
 
-                // Set the items as the users bought items
-                items = vitals.shop.data.object.b;
+                // check if the user function variable wasn't defined
+                if ( user == undefined || user == "" ) {
+
+                    // Set items to be the current users bought items
+                    items = vitals.shop.data.object.b;
+
+                // if the user function variable was defined
+                } else {
+                    
+                    // Set the items to be the users bought items
+                    items = vitals.shop.data.get( user ).b;
+
+                }
 
             }
 
+            var loops = items.length;
+
             // Loop through the items
-            for( i = 0; i < items.length; i++ ) {
+            for( i = 0; i < loops; i++ ) {
 
                 // Make sure we havent subtracted the correct amount
                 if ( count != amount ) {
 
                     // Check if the current item is the item we wish to remove
-                    if( items[i] == item ) {
+                    if( items[i - count] == item ) {
 
                         // Splice the array at "i" (i.e the current item
-                        items.splice( i, 1 );
+                        items.splice( i - count, 1 );
 
                         // Add one to the counter
                         count++;

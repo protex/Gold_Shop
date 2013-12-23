@@ -8,6 +8,11 @@ findstr /rvc:"^ *//" "gShop.dev.js" >"noComment1.js"
 findstr /rvc:"^ *\*/" "noComment1.js" > "noComment2.js"
 findstr /rvc:"^ */\*" "noComment2.js" > "noComment3.js"
 findstr /rvc:"^ *\*" "noComment3.js" > "gShop.full.js"
+type Copyright.txt gShop.full.js > test.js
+type test.js > gShop.full.js
+type Copyright.txt gShop.dev.js > test.js
+type test.js > gShop.dev.js
+erase test.js
 type gShop.full.js | clip
 erase main.js 
 erase api.js
@@ -15,4 +20,5 @@ erase pBey.js
 erase noComment1.js
 erase noComment2.js
 erase noComment3.js
+
 

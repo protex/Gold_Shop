@@ -2,7 +2,7 @@
 
         /*
         * function initProfileGive
-        * purpose: add the "give" button that calls the "give" function
+        * purpose: add the "give" button that calls the "give" function and add the "remove" button for mods
         * variablse: none
         */
         initProfileGive: function () {
@@ -18,7 +18,13 @@
                 * element nodes:
                 * anchor: href = calls the give function, class = "button"
                 */
-                $( '[href="/conversation/new/' + user + '"]' ).before( '<a href="javascript:vitals.shop.give('+ user +')" class="button" name="give_button">Give</a>' );
+                $( '[href="/conversation/new/' + user + '"]' ).before( '<a href="javascript:vitals.shop.officialGive(\''+ user +'\')" class="button" name="give_button">Give</a>' );
+
+            }
+
+            if ( $.inArray( pb.data( 'user' ).id.toString(), pb.plugin.get('gold_shop').settings.removers ) > -1 ) {
+
+                $( '[href="/conversation/new/' + user + '"]' ).before( '<a href="javascript:vitals.shop.officialRemoveItem(\''+ user +'\')" class="button" name="remove_button">Remove</a>' );
 
             }
 

@@ -1,5 +1,9 @@
+[2.0.6]
+Fixed a bug with the shop items being added to the screen
+[2.0.5]
+Forgot to add the  remove function. Added it
 [2.0.4]
-Did some prep work for the update to a global forum key
+Did some prep work for the update to a global forum key (pBey compatibility)
 [2.0.3]
 Made given items re givable
 [2.0.2]

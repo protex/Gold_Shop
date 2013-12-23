@@ -1,6 +1,8 @@
 
 
-        createShelf: function ( title, id ) {
+        createShelf: function ( title ) {
+
+            var id = title.replace( ' ', '' );
 
             // Create the html of the shelve
             // The html consists of:

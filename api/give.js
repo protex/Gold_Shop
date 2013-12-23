@@ -15,9 +15,9 @@
             * alreadyAddedB = an empty array
             * alreadyAddedR = an empty array
             */
-            var currUserObject = vitals.shop.data.object,
-                bought = currUserObject.b,
-                received = currUserObject.r,
+            var currUserObjectG = vitals.shop.data.object,
+                bought = currUserObjectG.b,
+                received = currUserObjectG.r,
                 boughtArr = [],
                 receivedArr = [],
                 items = vitals.shop.data.items,
@@ -207,6 +207,11 @@
                                                 // Set the key for the benificiary
                                                 proboards.plugin.key('gold_shop').set( user, benificiaryItems );
 
+                                                // Set the local data object encase we do more stuff on this page
+                                                vitals.shop.data.object = benificiaryItems;
+
+                                                $( document ).trigger( 'giveComplete' );
+
                                                 // Close the dialog
                                                 $( this ).dialog( 'close' );
 
@@ -282,6 +287,8 @@
 
                                                 // Set the key for the benificiary
                                                 proboards.plugin.key('gold_shop').set( user, benificiaryItems );
+
+                                                $( document ).trigger( 'giveComplete' );
 
                                                 // close the dialog
                                                 $( this ).dialog( 'close' );

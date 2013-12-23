@@ -17,6 +17,38 @@
                 data = vitals.shop.data.get( user ),
                 items = vitals.shop.data.items;
 
+            if( yootil.is_json( data ) ) {
+
+                // parse the data and create two empty arrays
+                var stuff = $.parseJSON( data ),
+                    bought = [],
+                    recieved = [];
+
+                for( i = 0; i < stuff.b.length; i++ ){
+
+                    // Push all the old "bought" data into the bought variable
+                    bought.push( stuff.b[i]['#'] );
+
+                }
+
+                // overwrite the old bought data with the re-formated version
+                stuff.b = bought;
+
+                for( d = 0; d < stuff.r.length; d++ ) {
+
+                    // push all the old recieved data into the "recieved" array
+                    recieved.push( stuff.r[d]['#'] );
+
+                }
+
+                // overwrite the old recieved data with the re-formated version
+                stuff.r = recieved;
+
+                // set loval variable fore easy access to user data
+                data = stuff
+
+            }
+
             // Check if the user has data
             if ( data == undefined ) {
 

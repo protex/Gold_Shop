@@ -18,16 +18,16 @@
                 data = vitals.shop.data.object;
 
             // Lop through the items
-            for ( i = 0; i < items.length; i++ ) {
+            for ( j = 0; j < items.length; j++ ) {
 
                 // Check if current item id matches the item passed in the function variable
-                if ( items[i].item_id == item ) {
+                if ( items[j].item_id == item ) {
 
                     // Make sure the items amount is not set to nothing
-                    if ( items[i].amount != "" ) {
+                    if ( items[j].amount != "" ) {
 
                         // Recalculate the items amount, minus the amount that the user has in his bought items, minus the amount he has in his received items
-                        var recalculate = items[i].amount - find_amount( data.b, item ) - find_amount( data.r, item );
+                        var recalculate = items[j].amount - vitals.shop.find_amount( data.b, item ) - vitals.shop.find_amount( data.r, item );
 
                         // Make sure the recalculated amount is not less then zero
                         if( parseInt( recalculate ) > 0 ) {

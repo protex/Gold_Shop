@@ -24,7 +24,7 @@
                 html += '<table id="shop-items">';
                 html += '<tbody>';
                 html += '<tr>';
-                html += '<td style="text-align: center"><font size="6">Items</font></td>';
+                html += '<td style="text-align: center"><font size="' + ( ( pb.plugin.get('gold_shop').settings.profile_page_text_size ==  "" )? 6: pb.plugin.get('gold_shop').settings.profile_page_text_size ) + '">Items</font></td>';
                 html += '</tr>';
                 html += '<tr>';
                 html += '<td id="shelf"></td>';
@@ -34,9 +34,9 @@
                 html += '</div>';
 
             // Append it to the correct spot
-            $( '.content-box:last' ).prev().after( html );
+            $( '#center-column' ).children().last().prev().after( html );
 
             // Call the shelveItems function so the items will be added
-            this.shelveItems();
+            vitals.shop.shelveItems();
 
         },

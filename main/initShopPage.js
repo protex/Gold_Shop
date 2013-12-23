@@ -24,10 +24,10 @@
             // Append the html to the page
             $( '#content' ).append( html );
 
-            // Initiate the categories or "shelves"
-            this.initShelves();
+            // Initiate the catagories or "shelves"
+            vitals.shop.initShelves();
 
             // Then add the items to the shelves
-            this.addItems();
+            vitals.shop.addItems();
 
         },
