@@ -18,7 +18,7 @@
             var html = "";
             html += '<div class="container shop-welcome">';
             html += '<div class="title-bar"><h1>The Shop</h1></div>';
-            html += '<div id="welcome-message" class="content cap-bottom"><center>' + vitals.shop.data.welcome_message + '</center></div>';
+            html += '<div id="welcome-message" class="content cap-bottom" style="padding: 5px"><center>' + vitals.shop.data.welcome_message + '</center></div>';
             html += '</div>';
 
             // Append the html to the page

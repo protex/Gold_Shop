@@ -23,7 +23,7 @@
                     // check if the current category and the category that the item belongs to match
                     if ( catagories[i].catagory == items[x].item_catagory ) {  
 
-                        var id =  items[x].item_catagory.replace( ' ', '' );
+                        var id =  items[x].item_catagory.replace( /\s/gi, '' );
 
                         // Append the html to the correct category
                         /*
@@ -34,11 +34,9 @@
                         * of the category
                         */
 
-                        console.log ( items[x].item_catagory );
+                        $( vitals.shop.createItem( items[x].item_name, items[x].image_of_item, items[x].description, items[x].cost_of_item, items[x].item_id, items[x].returnable, id ) ).appendTo( '#' + id );
 
-                        $( vitals.shop.createItem( items[x].item_name, items[x].image_of_item, items[x].description, items[x].cost_of_item, items[x].item_id, items[x].returnable ) ).appendTo( '#' + id );
-
-                        console.log( i );
+                        $( '.item > td' ).css( 'padding', '5px' );
 
                     }
 
