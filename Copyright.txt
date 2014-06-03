@@ -1,5 +1,5 @@
 /*******************************************
-* Copyright (c) Protex Codes               *
+* Copyright (c) Peter Maggio               *
 * (protex.boards.net)                      *
 * 2013 all rights reserved                 *
 * Not to be redistributed                  *

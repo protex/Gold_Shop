@@ -1,0 +1,758 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "3.X.X/misc/misc.js",
+			"settings":
+			{
+				"buffer_size": 1299,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "3.X.X/shop/infoPage.js",
+			"settings":
+			{
+				"buffer_size": 5225,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "3.X.X/shop/givePage.js",
+			"settings":
+			{
+				"buffer_size": 4245,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "3.X.X/shop/buyPage.js",
+			"settings":
+			{
+				"buffer_size": 7938,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "3.X.X/shop/shop.js",
+			"settings":
+			{
+				"buffer_size": 13504,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "3.X.X/shop/removePage.js",
+			"settings":
+			{
+				"buffer_size": 4243,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "3.X.X/shop/profilePage.js",
+			"settings":
+			{
+				"buffer_size": 6218,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "3.X.X/api/api.js",
+			"settings":
+			{
+				"buffer_size": 5252,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "3.X.X/mainFrame/mainFrame.js",
+			"settings":
+			{
+				"buffer_size": 4506,
+				"line_ending": "Windows"
+			}
+		}
+	],
+	"build_system": "Packages/JSLint/JSLint.sublime-build",
+	"command_palette":
+	{
+		"height": 58.0,
+		"selected_items":
+		[
+			[
+				"remove",
+				"Package Control: Remove Package"
+			],
+			[
+				"install",
+				"Package Control: Install Package"
+			],
+			[
+				"jshint",
+				"JSHint"
+			],
+			[
+				"instal",
+				"Package Control: Install Package"
+			],
+			[
+				"jslin",
+				"JSLint"
+			],
+			[
+				"install 	",
+				"Package Control: Install Package"
+			],
+			[
+				"linter",
+				"SublimeLinter: Extract Annotations"
+			],
+			[
+				"",
+				"Set Syntax: JavaScript"
+			],
+			[
+				"bu",
+				"Javascript Beautify"
+			],
+			[
+				"sublimeLinter",
+				"SublimeLinter: Extract Annotations"
+			],
+			[
+				"js",
+				"JSLint"
+			],
+			[
+				"JSLint",
+				"JSLint"
+			]
+		],
+		"width": 536.0
+	},
+	"console":
+	{
+		"height": 190.0
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/C/Users/Peter/Documents/My_Stuff/PBP/Gold_Shop/3.X.X/tour/tour.js",
+		"/C/Users/Peter/Documents/My_Stuff/PBP/Gold_Shop/gShop.full.js",
+		"/C/Users/Peter/Documents/My_Stuff/PBP/Running Game/movingGame.js",
+		"/C/Users/Peter/Documents/My_Stuff/PBP/Running Game/running.js",
+		"/C/Users/Peter/Documents/My_Stuff/PBP/Running Game/running.html",
+		"/C/Users/Peter/Documents/My_Stuff/PBP/Admin Tools/adminTools.js",
+		"/C/Users/Peter/Dropbox/Peter Stuff/School/Syllabi/src/Syllabi_Modification.js",
+		"/C/Users/Peter/Downloads/Fireworks-master/index.html",
+		"/C/Users/Peter/Downloads/Fireworks-master/js/fireworks.js",
+		"/C/Users/Peter/Downloads/Fireworks-master/js/requestanimframe.js",
+		"/C/Users/Peter/Downloads/Fireworks-master/css/fireworks.css",
+		"/C/Program Files (x86)/EA GAMES/Battlefield 2/mods/bf2/Settings/ServerSettings.con",
+		"/C/Program Files (x86)/EA GAMES/Battlefield 2/mods/xpack/Settings/Controls.con",
+		"/C/Users/Peter/Documents/My_Stuff/PBP/Staff_Thread_Approval/combined.js",
+		"/C/Users/Peter/Documents/My_Stuff/PBP/Staff_Thread_Approval/minified.js",
+		"/C/Users/Peter/Documents/My_Stuff/PBP/Staff_Thread_Approval/Misc/misc.js",
+		"/C/Users/Peter/Documents/My_Stuff/PBP/Staff_Thread_Approval/Main/deleteThread.js",
+		"/C/Users/Peter/Documents/My_Stuff/PBP/Staff_Thread_Approval/Main/init.js",
+		"/C/Users/Peter/Documents/My_Stuff/PBP/Staff_Thread_Approval/Main/init_threadListView.js",
+		"/C/Users/Peter/Documents/My_Stuff/PBP/Staff_Thread_Approval/Main/init_threadView.js",
+		"/C/Users/Peter/Documents/My_Stuff/PBP/Gold_Shop/2.1.2/gShop.full.js",
+		"/C/Users/Peter/Documents/My_Stuff/PBP/Gold_Shop/3.X.X/shop/shop.js",
+		"/C/Users/Peter/Desktop/Python/moduletest/secondfloor/test.py",
+		"/C/Users/Peter/Desktop/Python/moduletest/secondfloor/test2.py",
+		"/C/Users/Peter/Desktop/Python/setup.py",
+		"/C/Users/Peter/Dropbox/Peter Stuff/School/Syllabi/overView.html",
+		"/C/Users/Peter/Desktop/Kits/Mec/MEC_Specops.con",
+		"/C/Users/Peter/Desktop/Kits/Mec/MEC_Support.con",
+		"/C/Users/Peter/Desktop/Kits/Mec/MEC_Assault.con",
+		"/C/Users/Peter/Desktop/Kits/Mec/MEC_AT.con",
+		"/C/Users/Peter/Desktop/Kits/Mec/MEC_Engineer.con",
+		"/C/Users/Peter/Desktop/Kits/Mec/MEC_Medic.con",
+		"/C/Users/Peter/Desktop/Kits/Mec/MEC_Sniper.con",
+		"/C/Users/Peter/Desktop/Kits/US/US_Medic.con",
+		"/C/Users/Peter/Desktop/Kits/US/US_Sniper.con",
+		"/C/Users/Peter/Desktop/Kits/US/US_Specops.con",
+		"/C/Users/Peter/Desktop/Kits/US/US_Support.con",
+		"/C/Users/Peter/Desktop/Kits/US/US_Assault.con",
+		"/C/Users/Peter/Desktop/Kits/US/US_AT.con",
+		"/C/Users/Peter/Desktop/Kits/US/US_Engineer.con",
+		"/C/Users/Peter/Desktop/Kits/US/US_Common.con",
+		"/C/Users/Peter/AppData/Local/Temp/Temp2_Objects_server.zip/Kits/US/US_Assault.con",
+		"/C/Users/Peter/AppData/Local/Temp/Temp1_Objects_client.zip/Kits/US/US_Assault.con",
+		"/C/Users/Peter/Desktop/Kits/US/us_kits.con",
+		"/C/Program Files (x86)/EA GAMES/Battlefield 2/mods/bf2/ServerArchives.con",
+		"/C/Users/Peter/AppData/Local/Temp/7zO43BC.tmp/US_Assault.con",
+		"/C/Users/Peter/AppData/Local/Temp/Temp1_Objects_server.zip/Kits/US/US_Assault.con",
+		"/C/Users/Peter/Desktop/New folder (2)/US_Medic.con",
+		"/C/Users/Peter/AppData/Local/Temp/Temp1_Objects_server.zip/Kits/US/us_kits.con",
+		"/C/Users/Peter/Desktop/New folder (2)/US_Engineer.con",
+		"/C/Users/Peter/AppData/Local/Temp/Temp1_Objects_server.zip/Kits/US/US_Common.con",
+		"/C/Users/Peter/Desktop/New folder (2)/US_AT.con",
+		"/C/Users/Peter/Desktop/New folder (2)/US_Assault.con",
+		"/C/Users/Peter/Desktop/New folder (2)/US_Support.con",
+		"/C/Users/Peter/Desktop/New folder (2)/US_Specops.con",
+		"/C/Users/Peter/Desktop/New folder (2)/US_Sniper.con",
+		"/C/Users/Peter/Desktop/New folder (2)/US_Common.con",
+		"/C/Users/Peter/Desktop/New folder (2)/us_kits.con",
+		"/C/Program Files (x86)/EA GAMES/Battlefield 2/python/bf2/stats/unlocks.py",
+		"/C/Program Files (x86)/EA GAMES/Battlefield 2/mods/bf2/python/game/scoringCommon.py",
+		"/C/Python33/Lib/curses/__init__.py",
+		"/C/Python33/Lib/curses/panel.py",
+		"/C/Python33/Lib/curses/ascii.py",
+		"/C/Python33/Lib/curses/has_key.py",
+		"/C/Program Files (x86)/OpenOffice.org 3/Basis/program/python-core-2.6.1/lib/curses/__init__.py",
+		"/C/Program Files (x86)/EA GAMES/Battlefield 2/python/bf2/stats/import bf2.py",
+		"/C/Users/Peter/Desktop/about.html",
+		"/C/Program Files (x86)/EA GAMES/Battlefield 2/python/bf2/stats/fragalyzer_log.py",
+		"/C/Users/Peter/Desktop/unlocks.py",
+		"/C/Users/Peter/Documents/My_Stuff/PBP/Gold_Shop/3.X.X/api/api.js",
+		"/C/Program Files (x86)/EA GAMES/Battlefield 2/python/bf2/stats/stats.py",
+		"/C/Users/Peter/Documents/My_Stuff/PBP/Gold_Shop/3.X.X/mainFrame/mainFrame.js",
+		"/C/Users/Peter/Documents/My_Stuff/PBP/Gold_Shop/3.X.X/misc/misc.js",
+		"/C/Users/Peter/Documents/My_Stuff/PBP/Gold_Shop/3.X.X/shop/buyPage.js",
+		"/C/Users/Peter/Documents/My_Stuff/PBP/Gold_Shop/3.X.X/shop/removePage.js",
+		"/C/Users/Peter/Documents/My_Stuff/PBP/Gold_Shop/3.X.X/shop/profilePage.js",
+		"/C/Users/Peter/Documents/My_Stuff/PBP/Gold_Shop/3.X.X/shop/givePage.js",
+		"/C/Program Files (x86)/EA GAMES/Battlefield 2/python/bf2/stats/rank.py",
+		"/C/Program Files (x86)/EA GAMES/Battlefield 2/python/bf2/TriggerManager.py",
+		"/C/Program Files (x86)/EA GAMES/Battlefield 2/python/bf2/PlayerManager.py",
+		"/C/Program Files (x86)/EA GAMES/Battlefield 2/generate_md5.py",
+		"/C/Users/Peter/Dropbox/Peter Stuff/School/Syllabi/src/json.js",
+		"/C/Users/Peter/Documents/My_Stuff/PBP/Gold_Shop/3.X.X/shop/infoPage.js",
+		"/C/Users/Peter/AppData/Roaming/Sublime Text 2/Packages/JSHint/README.md",
+		"/C/Users/Peter/Documents/My_Stuff/PBP/.jshintrc",
+		"/C/Program Files/nodejs/node_modules/npm/node_modules/node-gyp/.jshintrc",
+		"/C/Users/Peter/node_modules/jshint/node_modules/exit/.jshintrc",
+		"/C/Users/Peter/Documents/My_Stuff/work/test/jquery-ui-1.10.3/jquery-ui-1.10.3/ui/.jshintrc",
+		"/C/Users/Peter/AppData/Roaming/Sublime Text 2/Packages/.jshintrc",
+		"/C/Users/Peter/AppData/Roaming/Sublime Text 2/Packages/JSHint/.jshintrc",
+		"/C/Users/Peter/Documents/My_Stuff/work/test/jquery-ui-1.10.3/jquery-ui-1.10.3/external/jshint.js",
+		"/C/Users/Peter/AppData/Roaming/Sublime Text 2/Packages/JSHint/JSHint.py",
+		"/C/Users/Peter/AppData/Roaming/Sublime Text 2/Packages/JSHint/JSHint.sublime-build",
+		"/C/Users/Peter/AppData/Roaming/Sublime Text 2/Packages/JSHint/reporter.js",
+		"/C/Users/Peter/AppData/Roaming/Sublime Text 2/Packages/User/JSLint.sublime-settings",
+		"/C/Users/Peter/AppData/Roaming/Sublime Text 2/Packages/JSLint/JSLint.sublime-build",
+		"/C/Users/Peter/AppData/Roaming/Sublime Text 2/Packages/JSLint/linter.js",
+		"/C/Users/Peter/AppData/Roaming/Sublime Text 2/Packages/JSLint/jslint.js",
+		"/C/Users/Peter/AppData/Roaming/Sublime Text 2/Packages/JSLint/JSLint.sublime-settings",
+		"/C/Users/Peter/AppData/Roaming/Sublime Text 2/Packages/User/Distraction Free.sublime-settings",
+		"/C/Users/Peter/AppData/Roaming/Sublime Text 2/Packages/User/SublimeLinter.sublime-settings",
+		"/C/Users/Peter/AppData/Roaming/Sublime Text 2/Packages/User/JavaScript.sublime-settings",
+		"/C/Users/Peter/Documents/My_Stuff/PBP/Gold_Shop/Copyright.txt",
+		"/C/Users/Peter/Documents/My_Stuff/PBP/Gold_Shop/concat.bat",
+		"/C/Users/Peter/AppData/Roaming/Sublime Text 2/Packages/User/Default (Windows).sublime-keymap",
+		"/C/Users/Peter/AppData/Roaming/Sublime Text 2/Packages/Default/Preferences.sublime-settings",
+		"/C/Users/Peter/AppData/Roaming/Sublime Text 2/Packages/User/Preferences.sublime-settings",
+		"/C/Users/Peter/Documents/My_Stuff/work/test/test.js"
+	],
+	"find":
+	{
+		"height": 35.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+			"<open files>"
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"update",
+			"onclick",
+			"vehicle",
+			"approval",
+			"access",
+			"prop( 'checked' )",
+			".children().last().prop",
+			"behind",
+			"player",
+			"global",
+			"unlock",
+			"unlocks",
+			"_curses",
+			"received",
+			"vitals.shop.data",
+			");",
+			"vitals.shop.api",
+			"userData",
+			"replace",
+			"give-item",
+			"function(",
+			"shop-container",
+			"complete",
+			"add",
+			"bracket",
+			"vitals.shop.return",
+			"return"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+			"user",
+			"player",
+			"curses",
+			"this",
+			"vitals.shop.api.get( user );",
+			"function ("
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 4,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "3.X.X/misc/misc.js",
+					"settings":
+					{
+						"buffer_size": 1299,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "3.X.X/shop/infoPage.js",
+					"settings":
+					{
+						"buffer_size": 5225,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "3.X.X/shop/givePage.js",
+					"settings":
+					{
+						"buffer_size": 4245,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2986,
+								2986
+							]
+						],
+						"settings":
+						{
+							"codeintel": true,
+							"codeintel_config":
+							{
+								"JavaScript":
+								{
+									"codeintel_max_recursive_dir_depth": 2,
+									"codeintel_scan_files_in_project": false,
+									"javascriptExtraPaths":
+									[
+									]
+								},
+								"PHP":
+								{
+									"codeintel_max_recursive_dir_depth": 5,
+									"codeintel_scan_files_in_project": false,
+									"phpExtraPaths":
+									[
+									]
+								},
+								"Python":
+								{
+									"env":
+									{
+									}
+								}
+							},
+							"codeintel_enabled_languages":
+							[
+								"JavaScript",
+								"Mason",
+								"XBL",
+								"XUL",
+								"RHTML",
+								"SCSS",
+								"Python",
+								"HTML",
+								"Ruby",
+								"Python3",
+								"XML",
+								"Sass",
+								"XSLT",
+								"Django",
+								"HTML5",
+								"Perl",
+								"CSS",
+								"Twig",
+								"Less",
+								"Smarty",
+								"Node.js",
+								"Tcl",
+								"TemplateToolkit",
+								"PHP"
+							],
+							"codeintel_live": true,
+							"codeintel_live_enabled_languages":
+							[
+								"JavaScript",
+								"Mason",
+								"XBL",
+								"XUL",
+								"RHTML",
+								"SCSS",
+								"Python",
+								"HTML",
+								"Ruby",
+								"Python3",
+								"XML",
+								"Sass",
+								"XSLT",
+								"Django",
+								"HTML5",
+								"Perl",
+								"CSS",
+								"Twig",
+								"Less",
+								"Smarty",
+								"Node.js",
+								"Tcl",
+								"TemplateToolkit",
+								"PHP"
+							],
+							"codeintel_max_recursive_dir_depth": 10,
+							"codeintel_scan_exclude_dir":
+							{
+								"JavaScript":
+								[
+									"/build/",
+									"/min/"
+								]
+							},
+							"codeintel_scan_files_in_project": true,
+							"codeintel_selected_catalogs":
+							[
+								"PyWin32",
+								"jQuery",
+								"Rails"
+							],
+							"codeintel_snippets": true,
+							"codeintel_syntax_map":
+							{
+								"Python Django": "Python"
+							},
+							"codeintel_tooltips": "popup",
+							"sublime_auto_complete": true,
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 1470.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "3.X.X/shop/buyPage.js",
+					"settings":
+					{
+						"buffer_size": 7938,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "3.X.X/shop/shop.js",
+					"settings":
+					{
+						"buffer_size": 13504,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								5754,
+								5754
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 1974.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "3.X.X/shop/removePage.js",
+					"settings":
+					{
+						"buffer_size": 4243,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": "3.X.X/shop/profilePage.js",
+					"settings":
+					{
+						"buffer_size": 6218,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 2142.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 7,
+					"file": "3.X.X/api/api.js",
+					"settings":
+					{
+						"buffer_size": 5252,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 8,
+					"file": "3.X.X/mainFrame/mainFrame.js",
+					"settings":
+					{
+						"buffer_size": 4506,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								149,
+								149
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 1512.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 0.0
+	},
+	"input":
+	{
+		"height": 0.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.exec":
+	{
+		"height": 100.0
+	},
+	"replace":
+	{
+		"height": 62.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+			[
+				"",
+				"/C/Users/Peter/Documents/My_Stuff/PBP/Gold_Shop/3.X.X/misc/misc.js"
+			]
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 500.0,
+		"selected_items":
+		[
+		],
+		"width": 380.0
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 150.0,
+	"status_bar_visible": true
+}

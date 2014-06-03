@@ -1,274 +1,204 @@
 
 
-vitals.shop.api = ( function () {
+vitals.shop.api = (function() {
 
     return {
 
-        settings: {
-
-            maxItemsAllowed: 20,
-
-        },
-
         data: {
 
-            retail: pb.plugin.get( 'gold_shop' ).settings.retail
-
-        },
-
-        set: function ( args ) {
-
-            pb.plugin.key( 'gold_shop' ).set( args );
-
-            $( document ).trigger( 'setCalled' );
-
-        },
-
-        get: function ( user ) {
-
-            var user = ( user == undefined || user == null ) ? pb.data( 'user' ).id : user;
-
-            return pb.plugin.key( 'gold_shop' ).get(  user );
-
-        },
-
-        getUrlPerameter: function ( perameter ) {
-
-            //* below is copied from http://stackoverflow.com/questions/8460265/get-a-variable-from-url-parameter-using-javascript
-
-            perameter = RegExp( '[?&]' + perameter.replace( /([[\]])/, '\\$1' ) + '=([^&#]*)' );
-
-            return ( window.location.href.match( perameter ) || ['', ''] )[1];
-
-        },
-
-
-        isMessedUp: function ( object ) {
-
-            if ( object != undefined && object != "" && object != null ) return true;
-            else return false;
-
-        },
-
-        find_amount: function ( obj, val ) {
-
-            var objects = [];
-
-            for ( var i in obj ) {
-
-                if ( !obj.hasOwnProperty( i ) ) continue;
-
-                if ( typeof obj[i] == 'object' ) {
-
-                    objects = objects.concat( vitals.shop.find_amount( obj[i], val ) );
-
-                } else if ( obj[i] == val && i != '' ) {
-
-                    objects.push( i );
-
-                }
-
+            object: {
+                b: {},
+                r: {}
             }
 
-            return objects;
+        },
+
+        get: function(user) {
+
+            if (user == null || user == undefined) user = pb.data('user').id;
+
+            return pb.plugin.key('gold_shop').get(user);
 
         },
 
-        buy: function ( item, amount ) {
+        set: function(args) {
 
-            var amountUserBought = vitals.shop.api.find_amount( vitals.shop.data.userData.b, item ),
-                amountUserReceived = vitals.shop.api.find_amount( vitals.shop.data.userData.r, item ),
-                totalAmountOwned = parseInt( amountUserBought ) + parseInt( amountUserReceived ),
-                usersMoney = parseFloat( pixeldepth.monetary.get() ),
-                costOfTransaction,
-                nameOfItem,
-                items = vitals.shop.data.shopItems,
-                isItemLimited = true,
-                itemAmountLimit = this.settings.maxItemsAllowed,
-                transactionStatus = true;
+            pb.plugin.key('gold_shop').set(args);
 
-            for ( var i in items ) {
+        },
 
-                if ( items[i].id == item ) {
+        update: function() {
 
-                    costOfTransaction = parseFloat( amount * items[i].cost_of_item );
+            pb.window.alert('update', {
 
-                    nameOfItem = items[i].item_name;
+                title: "Gold Shop Updater",
+                html: "The Gold Shop was updated and needs to change some of your data, this will not affect any of your items",
+                buttons: {
 
-                    if ( item[i].amount == "" ) {
+                    "OK": function() {
 
-                        isItemLimited == false;
+                        var data = pb.plugin.key('gold_shop').get(),
+                            object = {
+                                b: {},
+                                r: {}
+                            };
 
-                    } else {
+                        if (data.b.length > 0) {
 
-                        if ( item[i].amount <= 20 ) {
+                            for ( var i in data.b) {
 
-                            itemAmountLimit = parseInt( item[i].amount );
+                                console.log(object.b[data.b[i]] == undefined);
+
+                                if (object.b[data.b[i]] == undefined) {
+
+                                    object.b[data.b[i]] = countInArray(data.b, data.b[i]);
+
+                                }
+
+                            }
 
                         }
 
+                        if (data.r.length > 0) {
+
+                            for ( var i in data.r) {
+
+                                console.log(object.r[data.r[i]] == undefined);
+
+                                if (object.r[data.r[i]] == undefined) {
+
+                                    object.r[data.r[i]] = countInArray(data.r, data.r[i]);
+
+                                }
+
+                            }
+
+                        }
+
+                        pb.plugin.key('gold_shop').set({
+                            object_id: pb.data('user').id,
+                            value: object
+                        });
+
+                        $(this).dialog('close');                        
+
                     }
 
-                    break;
 
+
+                },
+
+            });
+
+        function countInArray(array, what) {
+                var count = 0;
+                for (var xyz = 0; xyz < array.length; xyz++) {
+                    if (array[xyz] === what) {
+                        count++;
+                    }
                 }
+                return count;
+            }
+
+        },
+
+        add: function(amount, id, given, user) {
+
+            if (user == undefined || user == null)
+                user = pb.data('user').id; 
+
+            if ( given == true )
+                type = "r";
+            else 
+                type = "b";           
+
+            for (var i = 0; i < amount; i++) {
+
+                this.increment(id, type, user);
 
             }
 
-            if ( isItemLimited ) {
+            this.set({
+                object_id: user,
+                value: this.get( user )
+            });
 
-                if ( totalAmountOwned == itemAmountLimit ) {
+        },
 
-                    pb.window.alert( 'Gold Shop Error', 'Sorry, you have already bought the max amount of ' + nameOfItem + ' allowed.' );
+        increment: function(id, type, user) {
 
-                    return false;
+            if (user == undefined || user == null)
+                user = pb.data('user').id;
 
-                } else if ( ( totalAmountOwned + amount ) > itemAmountLimit ) {
+            if( typeof this.get( user ) !== "object" )
+                this.set( { 
+                    object_id: user, 
+                    value: { 
+                        b:{}, 
+                        r:{} 
+                    } 
+                } );
 
-                    pb.window.alert( 'Gold Shop Error', 'Sorry, you can only buy ' + ( itemAmountLimit - totalAmountOwned ) + ' more of ' + nameOfItem+ '.' );
+            if (this.get( user )[type][id] != undefined) {
 
-                    return false;
-
-                }
+                this.get( user )[type][id] = ( parseInt(this.get( user )[type][id]) + 1 );
 
             } else {
 
-                if ( totalAmountOwned == 20 ) {
+                this.get( user )[type][id] = 1;
 
-                    pb.window.alert( 'Gold Shop Error', 'Sorry, you have reached the maximum amount of items the shop will let you buy.' );
+            }
 
-                    return false;
+        },
 
-                } else if ( amount > itemAmountLimit ) {
+        subtract: function(amount, id, given, user) {
 
-                    pb.window.alert( 'Gold Shop Error', 'Sorry, that amount is greater than the max amount allowed by the shop. Please choose an amount less then twenty' );
+            if (user == undefined || user == null)
+                user = pb.data('user').id;;       
 
-                    return false;
+            for (var i = 0; i < amount; i++) {
 
-                } else if ( ( totalAmountOwned + amount ) > itemAmountLimit ) {
+                if ( this.get( user ).b[id] !== undefined && given != true) {
+                    this.decrement(id, "b", user);
 
+                }else if ( this.get( user).b[id] === undefined || given === true )
+                    this.decrement( id, "r", user );
 
-                    pb.window.alert( 'Gold Shop Error', 'Sorry, but you cannot buy that amount as it would put you over the amount allowed by the shop. You may only buy ' + ( itemAmountLimit - totalAmountOwned ) + ' more.' );
+            }
 
-                    return false;
+            this.set({
+                object_id: user,
+                value: this.get( user )
+            });
 
+        },
+
+        decrement: function(id, type, user) {
+
+            if (user == undefined || user == null)
+                user = pb.data('user').id;
+
+            if ( typeof this.get( user ) !== "object" )
+                this.set( { 
+                    object_id: user, 
+                    value: { 
+                        b:{}, 
+                        r:{} 
+                    } 
+                } );
+
+            if (this.get( user )[type][id] !== undefined) {
+
+                this.get( user )[type][id] = ( parseInt(this.get( user )[type][id]) - 1 );
+
+                if ( parseInt( this.get( user )[type][id] ) == 0 )
+
+                    this.get( user )[type][id] = undefined;      
+                                  
                 }
 
-            }
-
-            if ( costOfTransaction > usersMoney ) {
-
-                pb.window.alert( 'Gold Shop Error', 'Sorry, but you do not have enough money to complete this transaction.' );
-
-
-                return false;
-
-            }
-
-            this.addItems( item, amount, false );
-
-
-
         },
 
-        _return: function ( item, amount ) {
+    };
 
-            var amountUserBought = vitals.shop.api.find_amount( vitals.shop.data.userData.b, item ).length,
-            amountUserReceived = vitals.shop.api.find_amount( vitals.shop.data.userData.r, item ).length,
-            totalAmountOwned = parseInt( amountUserBought ) + parseInt( amountUserRecieved ),
-            usersMoney = parseFloat( pixeldepth.monetary.get() ),
-            costOfTransaction,
-            nameOfItem,
-            items = vitals.shop.data.shopItems,
-            isItemLimited = true,
-            itemAmountLimit = this.settings.maxItemsAllowed,
-            transactionStatus = true;
-
-            for ( var i in items ) {
-
-                if ( items[i].item_id == item ) {
-
-                    costOfTransaction = items[i].cost_of_item * amount * this.data.retail;
-
-                    nameOfItem = items[i].item_name;
-
-                    break;
-
-                }
-
-            }
-
-            if ( amount > totalAmountOwned ) {
-
-                pb.window.alert( 'Gold Shop Error', 'Sorry, but you do not have ' + amount + ' of ' + nameOfItem + ' to return. You have ' + totalAmountOwned );
-
-            }
-
-        },
-
-        removeItems: function ( item, amount, give, user ) {
-
-            if ( user == undefined || user == "" || user == null ) user = pb.data( 'user' ).id;
-
-            var userData = this.get( user );
-            var itemslot;
-
-            if ( userData === undefined ) {
-
-                pb.window.alert( 'Gold Shop Error', 'Sorry, the specified user\'s data could not be located. Try a page that:  <br />A) The user has posted on<br />B) Has been tagged on<br />C) Is their profile page' );
-
-                return false;
-
-            }
-
-            if ( give ) itemSlot = userData['r'];
-            else itemSlot = userData['b'];
-
-            for ( var i = 0; i < amount; i++ ) {
-
-                if ( itemSlot.hasOwnProperty( item ) ) {
-
-                    itemSlot.splice( itemSlot.indexOf( item ), 1 );
-
-                } else break;
-
-            }
-
-            vitals.shop.api.set( { object_id: user, value: userData } );
-
-            pb.window.alert( 'Gold Shop Error', 'You tried to remove to many of the specified item, the Gold Shop has removed all of them' );
-
-
-        },
-
-        addItems: function ( item, amount, give, user ) {
-
-            if ( user == undefined || user == "" || user == null ) user = pb.data( 'user' ).id;
-
-            var userData = this.get( user );
-            var itemSlot;
-
-            if ( userData === undefined ) {
-
-                pb.window.alert( 'Gold Shop Error', 'Sorry, the specified user\'s data could not be located. Try a page that:  <br />A) The user has posted on<br />B) Has been tagged on<br />C) Is their profile page' );
-
-                return false;
-
-            }
-
-            if ( give ) itemSlot = userData['r'];
-            else itemSlot = userData['b'];
-
-            for ( var i = 0; i < amount; i++ ) {
-
-                itemSlot.push( item );
-
-            }
-
-            vitals.shop.api.set( { object_id: user, value: userData } );
-
-        }
-
-    }
-
-} )();
+})();
