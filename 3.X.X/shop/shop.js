@@ -30,9 +30,9 @@ vitals.shop = {
                 packages: {},
 
                 images: {
-                    dollar: (goldShop.settings.dollar_image_replacement !== "")? goldShop.settings.dollar_image_replacement: goldShop.images.DollarSmall,
+                    dollar: (goldShop.settings.dollar_image_replacement_black !== "")? goldShop.settings.dollar_image_replacement_black: goldShop.images.DollarSmall,
                     information: goldShop.images.InformationSmall,
-                    dollarLarge: goldShop.images.DollarLarge,
+                    dollarLarge: (goldShop.settings.dollar_image_replacement_gold !== "")? goldShop.settings.dollar_image_replacement_gold: goldShop.images.DollarLarge,
                     yootilBar: goldShop.images.shop_20x20,
                     infoLarge: goldShop.images.InformationLarge,
                     shopLarge: goldShop.images.ShopLarge,
