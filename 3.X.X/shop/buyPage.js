@@ -1,10 +1,10 @@
 
 
-vitals.shop.buyPage = (function() {
-
-    var goldShop = pb.plugin.get('gold_shop');
+var buyPage = (function() {
 
     return {
+
+        name: 'buyPage',
 
         data: {
 
@@ -49,6 +49,22 @@ vitals.shop.buyPage = (function() {
                 },
 
             },
+
+        },
+
+        init: function () {
+
+            if ( vitals.shop.mainFrame.data.location === 'buyPage' ) {
+
+                vitals.shop.buyPage.createPage();
+
+                vitals.shop.buyPage.addItemInfo();
+
+                vitals.shop.buyPage.addForm();
+
+                vitals.shop.buyPage.addCss();   
+
+            }         
 
         },
 
@@ -208,6 +224,10 @@ vitals.shop.buyPage = (function() {
 
         },
 
+        register: function () {
+            vitals.shop.mainFrame.register(this);
+        },
+
     }
 
-})();
+})().register();

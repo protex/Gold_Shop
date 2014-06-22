@@ -1,18 +1,56 @@
 
 
-vitals.shop.mainFrame = ( function () {
-
-    var goldShop = pb.plugin.get( 'gold_shop' );
+var mainFrame = ( function () {
 
     return {
 
+        name: 'mainFrame',
+
         data: {
 
+            plugins: {},
             location: '',
             currUser: pb.data( 'user' ).id,
             currHasData: false,
             otherHasData: false,
 
+        },
+
+        initFast: true,
+
+        init: function () {
+            //* I'm not using jQuery's native "ready" function because the
+            //* the errors in returned in the console are not discriptive
+            //* enought to find out where the error is occuring
+            var start = setInterval(function() {
+                if (!$.isReady) return;
+                clearInterval(start);
+
+                if (vitals.shop.mainFrame.checkForData()) {
+
+                    vitals.shop.mainFrame.loadData();
+
+                }
+
+                if (vitals.shop.mainFrame.checkIfUpdate()) {
+
+                    vitals.shop.api.update();
+
+                }
+
+                vitals.shop.mainFrame.createItemDataHash();
+
+                vitals.shop.mainFrame.handlePackageData();
+
+                vitals.shop.mainFrame.addYootilButton();
+
+                vitals.shop.mainFrame.locationCheck();
+
+                vitals.shop.mainFrame.locationReact();
+
+                vitals.shop.mainFrame.initPlugins();
+
+            }, 100);
         },
 
         locationCheck: function () {
@@ -67,20 +105,51 @@ vitals.shop.mainFrame = ( function () {
 
         },
 
+        handlePackageData: function () {
+
+            var packageInfo = pb.plugin.get('gold_shop').settings.pack_info,
+                packagedItems = pb.plugin.get('gold_shop').settings.pack_items,
+                dataHash = {};
+
+            if ( packageInfo.length > 0 ) {
+
+                for( i in packageInfo ) {
+
+                    dataHash[packageInfo[i].id] = {"name": packageInfo[i].name, "ID": packageInfo[i].id, "cost": packageInfo[i].cost, "description": packageInfo[i].description, "items": {}}
+
+                }
+
+                for( i in packagedItems ) {
+
+                    dataHash[packagedItems[i].package].items[packagedItems[i].id] = {"amount": packagedItems[i].amount, "ID": packagedItems[i].id, "name": vitals.shop.data.shopVariables.items[packagedItems[i].id].item_name};
+
+                }
+
+                vitals.shop.data.shopVariables.packages = dataHash;
+
+                vitals.shop.data.shopVariables.categories['packages'] = {'categoryName': "Packages"};
+
+            }
+
+        },
+
         locationReact: function () {
 
             if ( this.data.location === "home" ) {
 
                 if ( location.href.match( /\/\?shop/ ) ) {
                     
-                    if( !location.href.match( /\/\?shop\// ) ) 
-                        this.createShop();
+                    if( !location.href.match( /\/\?shop\// ) )
+                        this.data.location = "shop"
 
                     if ( location.href.match( /\/\?shop\/buy/ ) ) 
-                        this.createBuy();
+                        this.data.location = 'buyPage';
 
                     if ( location.href.match( /\/\?shop\/info/ ) ) 
-                        this.createInfo();
+                        this.data.location = "infoPage";
+
+                    if ( location.href.match( /\/\?shop\/package\/buy/ ) ) 
+                        this.data.location = "buyPackage";
 
                 }
 
@@ -88,16 +157,16 @@ vitals.shop.mainFrame = ( function () {
 
             if ( this.data.location === "user" ) {
 
-                this.createProfilePage();
+                this.data.location = "profilePage";
 
                 if ( location.href.match(/\?giveItem/) ) 
-                    this.createGivePage();
+                    this.data.location = "givePage";
 
                 if( location.href.match( /\?removeItem/ ) )
-                    this.createRemove();
+                    this.data.location = 'removePage';
 
                 if( location.href.match( /\?addItem/ ) )
-                    this.createAdd();
+                    this.data.location = 'addPage';
 
             }
 
@@ -118,91 +187,6 @@ vitals.shop.mainFrame = ( function () {
         loadData: function () {
 
             vitals.shop.data.userData = pb.plugin.key( 'gold_shop' ).get( this.data.currUser );
-
-        },
-
-        createShop: function () {
-
-            vitals.shop.createShopPage();
-
-            vitals.shop.createReturn();
-
-            vitals.shop.createCategories();
-
-            vitals.shop.addShopItems();
-
-            vitals.shop.addShopCss();
-
-        },
-
-        createBuy: function () {
-            
-            vitals.shop.buyPage.createPage();
-
-            vitals.shop.buyPage.addItemInfo();
-
-            vitals.shop.buyPage.addForm();
-
-            vitals.shop.buyPage.addCss();
-
-        },
-
-        createInfo: function () {
-
-            vitals.shop.infoPage.createPage();
-
-            vitals.shop.infoPage.addItemInfo();
-
-            vitals.shop.infoPage.addCss();
-
-        },
-
-        createProfilePage: function () {
-
-            vitals.shop.profilePage.createShelf();
-
-            vitals.shop.profilePage.addItems();
-
-            vitals.shop.profilePage.addCss();
-
-            if ( pb.data('user').id !== pb.data('page').member.id )
-                vitals.shop.profilePage.addGiveButton();
-
-            if ( $.inArray( pb.data( 'user' ).id.toString(), goldShop.settings.removers ) > -1 )
-                vitals.shop.profilePage.addRemoveButton();
-
-            if( $.inArray( pb.data( 'user' ).id.toString(), goldShop.settings.removers ) > -1 )
-                vitals.shop.profilePage.addAddButton();
-
-        },
-
-        createGivePage: function () {
-
-            vitals.shop.givePage.createPage();
-
-            vitals.shop.givePage.addDefaultContent();
-
-            vitals.shop.givePage.addCss();
-
-        },
-
-        createRemove: function () {
-
-            vitals.shop.removePage.createPage();
-
-            vitals.shop.removePage.addDefaultContent();
-
-            vitals.shop.removePage.addCss();
-
-        },
-
-        createAdd: function () {
-
-            vitals.shop.addPage.createPage();
-
-            vitals.shop.addPage.addDefaultContent();
-
-            vitals.shop.addPage.addCss();
 
         },
 
@@ -228,6 +212,66 @@ vitals.shop.mainFrame = ( function () {
 
         },
 
+        register: function ( object, initFast ) {
+
+            if ( object === undefined ) {
+
+                throw new Error('Failed atempt to register a plugin with the Gold Shop. Plugin was undefined')
+
+            }
+
+            if ( object.name === null || object.name === undefined ) {
+
+                throw new Error('Failed attempt to register a plugin with the Gold Shop. Plugin did not have a name object.');
+
+                return false;
+
+            }
+
+            if ( object.init === null || object.init === undefined ) {
+
+                throw new Error('Failed attempt to register plugin ' + object.name + ' with the Gold Shop. Plugin did not have an init function.')
+
+                return false;
+
+            }
+
+            if ( this.data.plugins[object.name] !== undefined ) {
+
+                throw new Error('Failed attempt to register plugin ' + object.name + 'with the Gold Shop. A plugin with that name already exists.')
+
+            }
+
+            this.data.plugins[object.name] = object;
+            vitals.shop[object.name] = object; 
+            
+            if (object.initFast === true ) {
+                object.init();
+            };        
+
+        },
+
+        initPlugins: function () {
+
+            var plugins = this.data.plugins,
+                pluginNames = Object.keys( plugins );
+
+            for( i in pluginNames ) {
+
+                if( plugins[pluginNames[i]].initFast === true ){
+                    continue;
+                }else {
+                    plugins[pluginNames[i]].init();
+                }
+
+            }
+
+        },
+
+        registerThis: function () {
+            this.register(this);
+        },
+
     }
 
-} )();
+} )().registerThis();

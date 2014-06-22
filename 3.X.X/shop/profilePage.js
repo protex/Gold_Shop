@@ -1,10 +1,10 @@
 
 
-vitals.shop.profilePage = (function() {
-
-	var goldShop = pb.plugin.get( 'gold_shop' );
+profilePage = (function() {
 
     return {
+
+        name: 'profilePage',
 
         data: {
 
@@ -52,6 +52,30 @@ vitals.shop.profilePage = (function() {
 
         },
 
+        init: function () {
+
+            if ( vitals.shop.mainFrame.data.location === "profilePage" ) {
+
+                vitals.shop.profilePage.createShelf();
+
+                vitals.shop.profilePage.addItems();
+
+                vitals.shop.profilePage.addCss();
+
+                if ( pb.data('user').id !== pb.data('page').member.id )
+                    vitals.shop.profilePage.addGiveButton();
+
+                if ( $.inArray( pb.data( 'user' ).id.toString(), goldShop.settings.removers ) > -1 )
+                    vitals.shop.profilePage.addRemoveButton();
+
+                if( $.inArray( pb.data( 'user' ).id.toString(), goldShop.settings.removers ) > -1 )
+                    vitals.shop.profilePage.addAddButton();
+
+            }
+
+
+        },
+
         createShelf: function () {
 
             this.data.userData = vitals.shop.api.get(( pb.data( 'route' ).name.match( /user/ ) ) ? pb.data( 'page' ).member.id : pb.data( 'user' ).id );
@@ -69,10 +93,10 @@ vitals.shop.profilePage = (function() {
 
         },
 
-        addItems: function () {
+        addItems: function (user) {
 
-            var bought = this.data.userData.b,
-                received = this.data.userData.r,
+            var bought = (user === null )? this.data.userData.b: vitals.shop.api.get(user).b,
+                received = (user === null )? this.data.userData.r: vitals.shop.api.get(user).r,
                 items = vitals.shop.data.shopVariables.items,
                 itemKeys = Object.keys( items );
 
@@ -204,9 +228,13 @@ vitals.shop.profilePage = (function() {
 
             $( '.user-menu' ).append( $listItem );
 
-        }
+        }, 
+
+        register: function () {
+            vitals.shop.mainFrame.register(this);
+        },
 
     }
 
-} )();
+} )().register();
 

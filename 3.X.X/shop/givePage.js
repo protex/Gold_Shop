@@ -1,8 +1,24 @@
 
 
-vitals.shop.givePage = (function(){
+var givePage = (function(){
  
     return {
+
+        name: 'givePage',
+
+        init: function () {
+
+            if ( vitals.shop.mainFrame.data.location === 'givePage' ) {
+
+                vitals.shop.givePage.createPage();
+
+                vitals.shop.givePage.addDefaultContent();
+
+                vitals.shop.givePage.addCss(); 
+
+            }           
+
+        },
 
         createPage: function () {
 
@@ -140,6 +156,11 @@ vitals.shop.givePage = (function(){
             })
 
         },
- };
 
-} )();
+        register: function () {
+            vitals.shop.mainFrame.register(this);
+        },
+
+     };
+
+} )().register();

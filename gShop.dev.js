@@ -7,14 +7,11 @@
 ********************************************/
 
 var vitals = vitals || {};
+var goldShop = pb.plugin.get('gold_shop');
+vitals.shop = {
+    data: {
 
-vitals.shop = (function () {
-
-    var goldShop = pb.plugin.get('gold_shop');
-
-    return {
-
-        data: {
+            version: "",
 
             userData: {
 
@@ -38,14 +35,16 @@ vitals.shop = (function () {
                 shopMessage: goldShop.settings.welcome_message,
                 categories: goldShop.settings.categories,
                 items: goldShop.settings.items,
+                packages: {},
 
                 images: {
-                    dollar: goldShop.images.DollarSmall,
+                    dollar: (goldShop.settings.dollar_image_replacement !== "")? goldShop.settings.dollar_image_replacement: goldShop.images.DollarSmall,
                     information: goldShop.images.InformationSmall,
                     dollarLarge: goldShop.images.DollarLarge,
                     yootilBar: goldShop.images.shop_20x20,
                     infoLarge: goldShop.images.InformationLarge,
                     shopLarge: goldShop.images.ShopLarge,
+                    package: goldShop.images.package
                 },
 
                 styles: {
@@ -121,18 +120,336 @@ vitals.shop = (function () {
                         "margin-right": "10px",
                     },
 
-                    contentBottom: {
-                        "display": (goldShop.settings.autohide == "true") ? "none" : "",
-                    },
-
                     returnImageBox: {
                         "width": "225px",
                         "height": "225px",
                     },
 
+                    catBar: {
+                        "width": "100%",
+                        "height": "20px",
+                    },
+
+                    catSelected: {
+                        "background-color": "#" + goldShop.settings.category_selected_color,
+                    },
+
+                    catBarItem: {
+                        "background-color": "#" + goldShop.settings.category_bar_color,
+                    },
+
                 },
 
             },
+
+        },
+};
+
+var mainFrame = ( function () {
+
+    return {
+
+        name: 'mainFrame',
+
+        data: {
+
+            plugins: {},
+            location: '',
+            currUser: pb.data( 'user' ).id,
+            currHasData: false,
+            otherHasData: false,
+
+        },
+
+        initFast: true,
+
+        init: function () {
+            //* I'm not using jQuery's native "ready" function because the
+            //* the errors in returned in the console are not discriptive
+            //* enought to find out where the error is occuring
+            var start = setInterval(function() {
+                if (!$.isReady) return;
+                clearInterval(start);
+
+                if (vitals.shop.mainFrame.checkForData()) {
+
+                    vitals.shop.mainFrame.loadData();
+
+                }
+
+                if (vitals.shop.mainFrame.checkIfUpdate()) {
+
+                    vitals.shop.api.update();
+
+                }
+
+                vitals.shop.mainFrame.createItemDataHash();
+
+                vitals.shop.mainFrame.handlePackageData();
+
+                vitals.shop.mainFrame.addYootilButton();
+
+                vitals.shop.mainFrame.locationCheck();
+
+                vitals.shop.mainFrame.locationReact();
+
+                vitals.shop.mainFrame.initPlugins();
+
+            }, 100);
+        },
+
+        locationCheck: function () {
+
+            var location = pb.data( 'route' ).name,
+                href = location.href;
+
+
+
+            switch ( location ) {
+
+                case "current_user":
+                    this.data.location = "current_user";
+                    break;
+
+                case "home":
+                    this.data.location = "home";
+                    break;
+
+                case "user":
+                    this.data.location = "user";
+                    break;
+
+            }
+
+        },
+
+        createItemDataHash: function () {
+
+            var pluginItems = pb.plugin.get( 'gold_shop' ).settings.items,
+                itemsRearranged = {};
+
+            for ( i in pluginItems ) {
+
+                itemsRearranged[pluginItems[i].item_id] = {
+
+                    "image_of_item": pluginItems[i].image_of_item,
+                    "item_name": pluginItems[i].item_name,
+                    "cost_of_item": pluginItems[i].cost_of_item,
+                    "description": pluginItems[i].description,
+                    "item_id": pluginItems[i].item_id,
+                    "item_category": pluginItems[i].item_category,
+                    "amount": pluginItems[i].amount,
+                    "givable": pluginItems[i].givable,
+                    "returnable": pluginItems[i].returnable,
+
+                };
+
+            }
+
+            vitals.shop.data.shopVariables.items = itemsRearranged;
+
+        },
+
+        handlePackageData: function () {
+
+            var packageInfo = pb.plugin.get('gold_shop').settings.pack_info,
+                packagedItems = pb.plugin.get('gold_shop').settings.pack_items,
+                dataHash = {};
+
+            if ( packageInfo.length > 0 ) {
+
+                for( i in packageInfo ) {
+
+                    dataHash[packageInfo[i].id] = {"name": packageInfo[i].name, "ID": packageInfo[i].id, "cost": packageInfo[i].cost, "description": packageInfo[i].description, "items": {}}
+
+                }
+
+                for( i in packagedItems ) {
+
+                    dataHash[packagedItems[i].package].items[packagedItems[i].id] = {"amount": packagedItems[i].amount, "ID": packagedItems[i].id, "name": vitals.shop.data.shopVariables.items[packagedItems[i].id].item_name};
+
+                }
+
+                vitals.shop.data.shopVariables.packages = dataHash;
+
+                vitals.shop.data.shopVariables.categories['packages'] = {'categoryName': "Packages"};
+
+            }
+
+        },
+
+        locationReact: function () {
+
+            if ( this.data.location === "home" ) {
+
+                if ( location.href.match( /\/\?shop/ ) ) {
+                    
+                    if( !location.href.match( /\/\?shop\// ) )
+                        this.data.location = "shop"
+
+                    if ( location.href.match( /\/\?shop\/buy/ ) ) 
+                        this.data.location = 'buyPage';
+
+                    if ( location.href.match( /\/\?shop\/info/ ) ) 
+                        this.data.location = "infoPage";
+
+                    if ( location.href.match( /\/\?shop\/package\/buy/ ) ) 
+                        this.data.location = "buyPackage";
+
+                }
+
+            }
+
+            if ( this.data.location === "user" ) {
+
+                this.data.location = "profilePage";
+
+                if ( location.href.match(/\?giveItem/) ) 
+                    this.data.location = "givePage";
+
+                if( location.href.match( /\?removeItem/ ) )
+                    this.data.location = 'removePage';
+
+                if( location.href.match( /\?addItem/ ) )
+                    this.data.location = 'addPage';
+
+            }
+
+        },
+
+        checkForData: function () {           
+
+            if ( typeof vitals.shop.api.get( this.data.currUser ) === "object" ) {
+
+                this.data.currHasData = true;
+
+                return true;
+
+            }
+
+        },
+
+        loadData: function () {
+
+            vitals.shop.data.userData = pb.plugin.key( 'gold_shop' ).get( this.data.currUser );
+
+        },
+
+        checkIfUpdate: function () {
+
+            if ( typeof vitals.shop.api.get() === "object" ) {
+
+                if ( vitals.shop.api.get()['lb'] != undefined ) {
+
+                    return true;
+
+                }
+
+            }
+
+            return false;
+
+        },
+
+        addYootilButton: function () {
+
+            yootil.bar.add( "/?shop", vitals.shop.data.shopVariables.images.yootilBar );
+
+        },
+
+        register: function ( object, initFast ) {
+
+            if ( object === undefined ) {
+
+                throw new Error('Failed atempt to register a plugin with the Gold Shop. Plugin was undefined')
+
+            }
+
+            if ( object.name === null || object.name === undefined ) {
+
+                throw new Error('Failed attempt to register a plugin with the Gold Shop. Plugin did not have a name object.');
+
+                return false;
+
+            }
+
+            if ( object.init === null || object.init === undefined ) {
+
+                throw new Error('Failed attempt to register plugin ' + object.name + ' with the Gold Shop. Plugin did not have an init function.')
+
+                return false;
+
+            }
+
+            if ( this.data.plugins[object.name] !== undefined ) {
+
+                throw new Error('Failed attempt to register plugin ' + object.name + 'with the Gold Shop. A plugin with that name already exists.')
+
+            }
+
+            this.data.plugins[object.name] = object;
+            vitals.shop[object.name] = object; 
+            
+            if (object.initFast === true ) {
+                object.init();
+            };        
+
+        },
+
+        initPlugins: function () {
+
+            var plugins = this.data.plugins,
+                pluginNames = Object.keys( plugins );
+
+            for( i in pluginNames ) {
+
+                if( plugins[pluginNames[i]].initFast === true ){
+                    continue;
+                }else {
+                    plugins[pluginNames[i]].init();
+                }
+
+            }
+
+        },
+
+        registerThis: function () {
+            this.register(this);
+        },
+
+    }
+
+} )().registerThis();
+
+var shopPage = (function () {
+
+    return {
+
+    	name: 'shopPage',
+
+        init: function () {
+
+            if ( vitals.shop.mainFrame.data.location === "shop" ) {
+
+	            this.createShopPage();
+
+	            this.createReturn();
+
+	            this.createCatBar();
+
+	            this.createCategories();            
+
+	            if ( Object.keys( vitals.shop.data.shopVariables.packages ).length > 0 ) {
+
+	                this.addPackageItems();
+
+	            }
+
+	            this.addShopItems();
+
+	            this.addShopCss();  
+
+            }          
 
         },
 
@@ -144,13 +461,11 @@ vitals.shop = (function () {
 
             console.log( pixeldepth.monetary.get() );
 
-            yootil.create.container(this.data.shopVariables.shopName + '<span style="float: right">(' + pixeldepth.monetary.settings.text.wallet + ': ' + pixeldepth.monetary.get(true) + ')', this.data.shopVariables.shopMessage).addClass('shop-welcome').appendTo('#shop-container');
+            yootil.create.container(vitals.shop.data.shopVariables.shopName + '<span style="float: right">(' + pixeldepth.monetary.settings.text.wallet + ': ' + pixeldepth.monetary.get(true) + ')', vitals.shop.data.shopVariables.shopMessage).addClass('shop-welcome').appendTo('#shop-container');
 
-            yootil.create.nav_branch('/?shop', this.data.shopVariables.shopName);
+            yootil.create.nav_branch('/?shop', vitals.shop.data.shopVariables.shopName);
 
-            yootil.create.container("Return an item").attr('id', 'return-container').appendTo('#shop-container');
-
-            $('title').text(this.data.shopVariables.shopName + " | Forum");
+            $('title').text(vitals.shop.data.shopVariables.shopName + " | Forum");
 
         },
 
@@ -158,11 +473,13 @@ vitals.shop = (function () {
 
             var html = "",
                 option = $("<select>"),
-                items = this.data.shopVariables.items,
+                items = vitals.shop.data.shopVariables.items,
                 userData = vitals.shop.data.userData,
                 userBought = userData['b'],
                 userReceived = userData['r'],
                 keys = removeArrDuples(Object.keys(userBought).concat(Object.keys(userReceived)), JSON.stringify);
+
+            yootil.create.container("Return an item").attr('id', 'return-container').appendTo('#shop-container');            
 
             for (var i = 0; i < keys.length; i++) {
 
@@ -181,13 +498,71 @@ vitals.shop = (function () {
 
             html += '<div id="return-content">';
             html += '<div class="shopItem returnImage">';
-            html += '<img src="' + this.data.shopVariables.images.shopLarge + '" />';
+            html += '<img src="' + vitals.shop.data.shopVariables.images.shopLarge + '" />';
             html += '</div>';
             html += '</div>';
 
             $(html).appendTo('#return-container > .content');
 
-            option.attr('id', 'return-item').appendTo('#return-content').before("Would you like to return an item?").after('<br />Amount: <input id="return-amount" /><br /><input type="button" style="margin-top: 3px" onclick="vitals.shop.sReturn()" value="Return"/>');
+            option.attr('id', 'return-item').appendTo('#return-content').before("Would you like to return an item?").after('<br />Amount: <input id="return-amount" /><br /><input type="button" style="margin-top: 3px" onclick="vitals.shop.shopPage.sReturn()" value="Return"/>');
+
+        },
+
+        createCatBar: function () {
+
+            var html = '<table id="catBar"></tbody><tr id="catRow"></tr></tbody></table>',
+                categories = vitals.shop.data.shopVariables.categories;
+
+            $('#shop-container').append(html);
+
+            for ( i in categories ) {
+
+                if ( i == 0) 
+                    $('#catRow').append( '<td class="catSelected" onclick="vitals.shop.shopPage.showCat(\''+ categories[i].categoryName.replace(/\s|'|"|&|\./g, '') + '\', this)"><div align="center">' + categories[i].categoryName + '</div></td>' ); 
+                else
+                    $('#catRow').append( '<td class="catBarItem" onclick="vitals.shop.shopPage.showCat(\'' + categories[i].categoryName.replace(/\s|'|"|&|\./g, '') + '\', this)"><div align="center">' + categories[i].categoryName + '</div></td>' );
+
+            }
+
+        },
+
+        addPackageItems: function () {
+
+            var packages = vitals.shop.data.shopVariables.packages;
+
+            for ( i in packages ) {
+
+                this.createPackage(i);
+
+            }
+
+        },
+
+        createPackage: function (index) {
+
+            var packages = vitals.shop.data.shopVariables.packages;               
+
+            var html = '';
+            html += '<div class="shopItem" onmouseover="vitals.shop.shopPage.showOverlay( this )" onmouseout="vitals.shop.shopPage.hideOverlay(this)">';
+            html += '<div class="itemInner">';
+            html += '<div class="itemTitle">';
+            html += packages[index].name;
+            html += '</div>';
+            html += '<img src="' + vitals.shop.data.shopVariables.images.package + '" style="max-width: 150px; max-height: 150px; display: block; margin-right: auto; margin-left: auto;" />';
+            html += '<div class="itemInfo">';
+            html += 'Cost: ' + pixeldepth.monetary.settings.money_symbol + yootil.number_format( parseFloat(packages[index].cost ) );
+            html += '<br />';
+            html += 'In Stock: &infin;';
+            html += '</div>';
+            html += '<div class="itemOverlay">';
+            html += '<span class="shopItemIcon left"><a href="/?shop/package/info&id=' + packages[index].ID + '"><img src="' + vitals.shop.data.shopVariables.images.information + '" /></a></span>';
+            html += '<span class="shopItemIcon right"><a href="/?shop/package/buy&id=' + packages[index].ID + '"><img src="' + vitals.shop.data.shopVariables.images.dollar + '" /></a></span>';
+            html += '</div>';
+            html += '</div>';
+            html += '</div>';
+
+            $(html).appendTo('#Packages > .content');
+
 
         },
 
@@ -197,32 +572,29 @@ vitals.shop = (function () {
 
             for (var i in categories) {
 
-                this.createStoreShelf(i);
+                if ( i == 0 )
+                    this.createStoreShelf(i, false);
+                else
+                    this.createStoreShelf(i, true)
 
             }
 
         },
 
-        createStoreShelf: function (index) {
+        createStoreShelf: function (index, hidden) {
 
-            console.log('category');
-
-            var categories = this.data.shopVariables.categories,
+            var categories = vitals.shop.data.shopVariables.categories,
                 category = categories[index].categoryName,
                 cClass = category.replace(/\s|'|"|&|\./g, '');
 
 
-            yootil.create.container(category + '<span style="float: right">(Click to Show/Hide)</span>').attr('id', cClass).addClass('shopCategory').appendTo('#shop-container');
-
-            $( '#' + cClass + ' > .title-bar' ).click(function () {
-                $(this).next().slideToggle();
-            });
+            yootil.create.container(category).css( ( ( hidden )? {"display":"none"}: {"display":""} ) ).attr('id', cClass).addClass('shopCategory').appendTo('#shop-container');
 
         },
 
         addShopItems: function () {
 
-            var items = this.data.shopVariables.items;
+            var items = vitals.shop.data.shopVariables.items;
 
             for (var i in items) {
 
@@ -234,7 +606,7 @@ vitals.shop = (function () {
 
         createShopItem: function (index) {
 
-            var items = this.data.shopVariables.items,
+            var items = vitals.shop.data.shopVariables.items,
                 category = items[index].item_category,
                 cClass = category.replace(/\s|'|"|&|\./g, ''),
                 itemData = vitals.shop.data.shopVariables.items[index],                
@@ -251,7 +623,7 @@ vitals.shop = (function () {
                 inStock = "&infin;";                
 
             var html = '';
-            html += '<div class="shopItem ' + cClass + '" id="' + items[index].item_id + '" onmouseover="vitals.shop.showOverlay( this )" onmouseout="vitals.shop.hideOverlay(this)">';
+            html += '<div class="shopItem ' + cClass + '" id="' + items[index].item_id + '" onmouseover="vitals.shop.shopPage.showOverlay( this )" onmouseout="vitals.shop.shopPage.hideOverlay(this)">';
             html += '<div class="itemInner">';
             html += '<div class="itemTitle">';
             html += items[index].item_name;
@@ -263,8 +635,8 @@ vitals.shop = (function () {
             html += 'In Stock: ' + inStock;
             html += '</div>';
             html += '<div class="itemOverlay">';
-            html += '<span class="shopItemIcon left"><a href="/?shop/info&id=' + items[index].item_id + '"><img src="' + this.data.shopVariables.images.information + '" /></a></span>';
-            html += '<span class="shopItemIcon right"><a href="/?shop/buy&id=' + items[index].item_id + '"><img src="' + this.data.shopVariables.images.dollar + '" /></a></span>';
+            html += '<span class="shopItemIcon left"><a href="/?shop/info&id=' + items[index].item_id + '"><img src="' + vitals.shop.data.shopVariables.images.information + '" /></a></span>';
+            html += '<span class="shopItemIcon right"><a href="/?shop/buy&id=' + items[index].item_id + '"><img src="' + vitals.shop.data.shopVariables.images.dollar + '" /></a></span>';
             html += '</div>';
             html += '</div>';
             html += '</div>';
@@ -276,27 +648,31 @@ vitals.shop = (function () {
 
         addShopCss: function () {
 
-            $('.shopItem').css(this.data.shopVariables.styles.shopItem);
+            $('.shopItem').css(vitals.shop.data.shopVariables.styles.shopItem);
 
-            $('.itemTitle').css(this.data.shopVariables.styles.shopItemName);
+            $('.itemTitle').css(vitals.shop.data.shopVariables.styles.shopItemName);
 
-            $('.shopCategory > .content').removeClass('pad-all').css(this.data.shopVariables.styles.shopContent);
+            $('.shopCategory > .content').removeClass('pad-all').css(vitals.shop.data.shopVariables.styles.shopContent);
 
-            $('.itemInner').css(this.data.shopVariables.styles.shopItemInner);
+            $('.itemInner').css(vitals.shop.data.shopVariables.styles.shopItemInner);
 
-            $('.itemInfo').css(this.data.shopVariables.styles.shopItemInfo);
+            $('.itemInfo').css(vitals.shop.data.shopVariables.styles.shopItemInfo);
 
-            $('.itemOverlay').css(this.data.shopVariables.styles.shopItemOverlay);
+            $('.itemOverlay').css(vitals.shop.data.shopVariables.styles.shopItemOverlay);
 
-            $('.shopItemIcon').css(this.data.shopVariables.styles.shopItemIcon);
+            $('.shopItemIcon').css(vitals.shop.data.shopVariables.styles.shopItemIcon);
 
-            $('.itemOverlay > .left').css(this.data.shopVariables.styles.shopItemIconLeft);
+            $('.itemOverlay > .left').css(vitals.shop.data.shopVariables.styles.shopItemIconLeft);
 
-            $('.itemOverlay > .right').css(this.data.shopVariables.styles.shopItemIconRight);
+            $('.itemOverlay > .right').css(vitals.shop.data.shopVariables.styles.shopItemIconRight);
 
-            $('.shopCategory > .content').css(this.data.shopVariables.styles.contentBottom);
+            $('.returnImage').css(vitals.shop.data.shopVariables.styles.returnImageBox);
 
-            $('.returnImage').css(this.data.shopVariables.styles.returnImageBox);
+            $('#catBar').css(vitals.shop.data.shopVariables.styles.catBar);
+
+            $('.catSelected').css(vitals.shop.data.shopVariables.styles.catSelected);
+
+            $('.catBarItem').css(vitals.shop.data.shopVariables.styles.catBarItem);
 
         },
 
@@ -316,6 +692,19 @@ vitals.shop = (function () {
                 $(obj).find('.itemOverlay').hide();
 
             }
+
+        },
+
+        showCat: function ( id, self ) {
+            $('.shopCategory').hide();
+
+            $( '#' + id ).show();
+
+            $( '.catSelected' ).removeClass( 'catSelected' ).addClass('catBarItem');
+
+            $(self).removeClass('catBarItem').addClass('catSelected');
+
+            this.addShopCss();
 
         },
 
@@ -384,7 +773,7 @@ vitals.shop = (function () {
 
             }
 
-            vitals.shop.api.subtract( parseInt( amount ), item, false, null )
+            vitals.shop.api.add( parseInt( amount ), item, false, null )
 
             pixeldepth.monetary.add(vitals.shop.data.shopVariables.items[item].cost_of_item * amount * ( ( !isNaN( goldShop.settings.retail ) )? goldShop.settings.retail: 1 ) );
 
@@ -396,15 +785,19 @@ vitals.shop = (function () {
 
         },
 
+        register: function () {
+            vitals.shop.mainFrame.register(this);
+        },
+
     };
 
-})();
+})().register();
 
-vitals.shop.buyPage = (function() {
-
-    var goldShop = pb.plugin.get('gold_shop');
+var buyPage = (function() {
 
     return {
+
+        name: 'buyPage',
 
         data: {
 
@@ -449,6 +842,22 @@ vitals.shop.buyPage = (function() {
                 },
 
             },
+
+        },
+
+        init: function () {
+
+            if ( vitals.shop.mainFrame.data.location === 'buyPage' ) {
+
+                vitals.shop.buyPage.createPage();
+
+                vitals.shop.buyPage.addItemInfo();
+
+                vitals.shop.buyPage.addForm();
+
+                vitals.shop.buyPage.addCss();   
+
+            }         
 
         },
 
@@ -608,15 +1017,19 @@ vitals.shop.buyPage = (function() {
 
         },
 
+        register: function () {
+            vitals.shop.mainFrame.register(this);
+        },
+
     }
 
-})();
+})().register();
 
-vitals.shop.infoPage = (function(){ 
-
-	var goldShop = pb.plugin.get( 'gold_shop');
+var infoPackagePage = (function(){ 
 
 	return {
+
+		name: 'infoPackage',
 
 	    data: {
 
@@ -659,68 +1072,70 @@ vitals.shop.infoPage = (function(){
 
 	    },
 
+	    init: function () {
+
+	    	if( location.href.match(/\?shop\/package\/info/) ) {
+
+	            this.createPage();
+
+	            this.addItemInfo();
+
+	            this.addCss();
+
+	        }
+
+	    },
+
 	    createPage: function () {
 
 	        var itemId = getURLParams().id,
-	            item = vitals.shop.data.shopVariables.items[itemId];
+	            item = vitals.shop.data.shopVariables.packages[itemId];
 
 	        this.data.currentItem = itemId;
 
-	        yootil.create.page( /\/\?shop\/info/ );
+	        yootil.create.page( /\/\?shop\/package\/info/ );
 
 	        yootil.create.nav_branch( "/?shop", vitals.shop.data.shopVariables.shopName );
 
-	        yootil.create.nav_branch( "/?shop/info&id=" + itemId, "Info: " + item.item_name );
+	        yootil.create.nav_branch( "/?shop/package/info&id=" + itemId, "Info: " + item.name );
 
 	        $( 'title' ).text( vitals.shop.data.shopVariables.shopName + " | Info" );
 
 	        $( '#content' ).append( '<div id="shop-container"></div>' );
 
-	        yootil.create.container( 'Info Item: ' + item.item_name + '<span style="float: right">(' + pixeldepth.monetary.settings.text.wallet + ': ' + pixeldepth.monetary.get( true ) + ')' ).attr( 'id', 'info-container' ).appendTo( '#shop-container' );
+	        yootil.create.container( 'Info Item: ' + item.name + '<span style="float: right">(' + pixeldepth.monetary.settings.text.wallet + ': ' + pixeldepth.monetary.get( true ) + ')' ).attr( 'id', 'info-container' ).appendTo( '#shop-container' );
 
 	    },
 
 	    addItemInfo: function () {
 
-	        var itemData = vitals.shop.data.shopVariables.items[this.data.currentItem],
+	        var itemData = vitals.shop.data.shopVariables.packages[this.data.currentItem],
 	            html = '',
-	            userItems = vitals.shop.data.userData,
-	            userBought = ( userItems.b[this.data.currentItem] != undefined ) ? userItems.b[this.data.currentItem] : 0,
-	            userReceived = ( userItems.r[this.data.currentItem] != undefined ) ? userItems.r[this.data.currentItem] : 0,
-	            userTotal = parseInt( userBought + userReceived ),
-	            inStock = itemData.amount - userTotal;
+	            itemList = '';
 
-	        if ( inStock < 0 )
-	        	inStock = 0;
+	        for ( i in itemData.items ) {
+	        	itemList += itemData.items[i].name + ', ';
+	        }
 
-	        if( itemData.amount === "" )
-	        	inStock = "&infin;";
-
-	        html += '<div class="item-image"><img src="' + itemData.image_of_item + '" /></div>';
-	        html += '<div class="money-image"><img src="' + vitals.shop.data.shopVariables.images.infoLarge + '" /></div>';
+	        html += '<div class="item-image"><img src="' + vitals.shop.data.shopVariables.images.package + '" /></div>';
+	        html += '<div class="info-image"><img src="' + vitals.shop.data.shopVariables.images.infoLarge + '" /></div>';
 	        html += '<div class="item-info">';
-	        html += '<span class="nameholder">Item: </span><span class="item-attr">' + itemData.item_name + '</span>';
+	        html += '<span class="nameholder">Package Name: </span><span class="item-attr">' + itemData.name + '</span>';
 	        html += '<br />';
 	        html += '<br />';
-	        html += '<span class="nameholder">Description: </span><span class="item-attr">' + ( ( itemData.description.length >= 50 ) ? "<span style='cursor: pointer' onclick='vitals.shop.infoPage.alertInfo()'>(Click to view description)</span>" : itemData.description ) + '</span>';
+	        html += '<span class="nameholder">Description: </span><span class="item-attr">' + ( ( itemData.description.length >= 50 ) ? "<span style='cursor: pointer' onclick='this.alertInfo()'>(Click to view description)</span>" : itemData.description ) + '</span>';
 	        html += '<br />';
 	        html += '<br />';
-	        html += '<span class="nameholder">Cost: </span><span class="item-attr">' + pixeldepth.monetary.settings.money_symbol + yootil.number_format( parseFloat( itemData.cost_of_item ) ) + '</span>';
+	        html += '<span class="nameholder">Cost: </span><span class="item-attr">' + pixeldepth.monetary.settings.money_symbol + yootil.number_format( parseFloat( itemData.cost ) ) + '</span>';
 	        html += '<br />';
 	        html += '<br />';
-	        html += '<span class="nameholder">In Stock: </span><span id="item-amount" class="item-attr">' + inStock + '</span>';
+	        html += '<span class="nameholder">In Stock: </span><span id="item-amount" class="item-attr">&infin;</span>';
 	        html += '<br />';
 	        html += '<br />';
-	        html += '<span class="nameholder">Category: </span><span class="item-attr">' + itemData.item_category + '</span>';
+	        html += '<span class="nameholder">ID: </span><span class="item-attr">' + itemData.ID + '</span>';
 	        html += '<br />';
 	        html += '<br />';
-	        html += '<span class="nameholder">Returnable: </span><span class="item-attr">' + ( ( itemData.returnable == "true" )? "Yes": "No" ) + '</span>';
-	        html += '<br />';
-	        html += '<br />';
-	        html += '<span class="nameholder">Giveable: </span><span class="item-attr">' + ( ( itemData.givable == "true" )? "Yes": "No" ) + '</span>';
-	        html += '<br />';
-	        html += '<br />';
-	        html += '<span class="nameholder">ID: </span><span class="item-attr">' + itemData.item_id + '</span>';
+	        html += '<span class="nameholder">Items in Package: </span><span class="item-attr">' + itemList + '</span>';
 	        html += '</div>';
 
 	        $( html ).appendTo( '#info-container > .content' );
@@ -729,7 +1144,7 @@ vitals.shop.infoPage = (function(){
 
 	    alertInfo: function () {
 
-	        var itemData = vitals.shop.data.shopVariables.items[this.data.currentItem],
+	        var itemData = vitals.shop.data.shopVariables.packages[this.data.currentItem],
 	            description = itemData.description;
 
 	        pb.window.alert( description );
@@ -740,7 +1155,7 @@ vitals.shop.infoPage = (function(){
 
 	        $( '#info-container .item-image' ).css( this.data.styles.itemImage );
 
-	        $( '#info-container .money-image' ).css( this.data.styles.dollarImage );
+	        $( '#info-container .info-image' ).css( this.data.styles.dollarImage );
 
 	        $( '#info-container .item-info' ).css( this.data.styles.itemInfo );
 
@@ -750,15 +1165,19 @@ vitals.shop.infoPage = (function(){
 
 	    },
 
-    }
+	    register: function () {
+	    	vitals.shop.mainFrame.register(this);
+	    },
 
-} )();
+    };
 
-vitals.shop.profilePage = (function() {
+} )().register();
 
-	var goldShop = pb.plugin.get( 'gold_shop' );
+profilePage = (function() {
 
     return {
+
+        name: 'profilePage',
 
         data: {
 
@@ -806,6 +1225,30 @@ vitals.shop.profilePage = (function() {
 
         },
 
+        init: function () {
+
+            if ( vitals.shop.mainFrame.data.location === "profilePage" ) {
+
+                vitals.shop.profilePage.createShelf();
+
+                vitals.shop.profilePage.addItems();
+
+                vitals.shop.profilePage.addCss();
+
+                if ( pb.data('user').id !== pb.data('page').member.id )
+                    vitals.shop.profilePage.addGiveButton();
+
+                if ( $.inArray( pb.data( 'user' ).id.toString(), goldShop.settings.removers ) > -1 )
+                    vitals.shop.profilePage.addRemoveButton();
+
+                if( $.inArray( pb.data( 'user' ).id.toString(), goldShop.settings.removers ) > -1 )
+                    vitals.shop.profilePage.addAddButton();
+
+            }
+
+
+        },
+
         createShelf: function () {
 
             this.data.userData = vitals.shop.api.get(( pb.data( 'route' ).name.match( /user/ ) ) ? pb.data( 'page' ).member.id : pb.data( 'user' ).id );
@@ -823,10 +1266,10 @@ vitals.shop.profilePage = (function() {
 
         },
 
-        addItems: function () {
+        addItems: function (user) {
 
-            var bought = this.data.userData.b,
-                received = this.data.userData.r,
+            var bought = (user === null )? this.data.userData.b: vitals.shop.api.get(user).b,
+                received = (user === null )? this.data.userData.r: vitals.shop.api.get(user).r,
                 items = vitals.shop.data.shopVariables.items,
                 itemKeys = Object.keys( items );
 
@@ -958,17 +1401,37 @@ vitals.shop.profilePage = (function() {
 
             $( '.user-menu' ).append( $listItem );
 
-        }
+        }, 
+
+        register: function () {
+            vitals.shop.mainFrame.register(this);
+        },
 
     }
 
-} )();
+} )().register();
 
 
 
-vitals.shop.givePage = (function(){
+var givePage = (function(){
  
     return {
+
+        name: 'givePage',
+
+        init: function () {
+
+            if ( vitals.shop.mainFrame.data.location === 'givePage' ) {
+
+                vitals.shop.givePage.createPage();
+
+                vitals.shop.givePage.addDefaultContent();
+
+                vitals.shop.givePage.addCss(); 
+
+            }           
+
+        },
 
         createPage: function () {
 
@@ -1106,253 +1569,45 @@ vitals.shop.givePage = (function(){
             })
 
         },
- };
 
-} )();
+        register: function () {
+            vitals.shop.mainFrame.register(this);
+        },
 
-vitals.shop.mainFrame = ( function () {
+     };
 
-    var goldShop = pb.plugin.get( 'gold_shop' );
+} )().register();
+
+var api = (function() {
 
     return {
 
-        data: {
+        name: 'api',
 
-            location: '',
-            currUser: pb.data( 'user' ).id,
-            currHasData: false,
-            otherHasData: false,
+        initFast: true,
 
-        },
+        init: function () {
 
-        locationCheck: function () {
+            var start = setInterval(function() {
+                if (!$.isReady) return;
+                clearInterval(start);
 
-            var location = pb.data( 'route' ).name,
-                href = location.href;
-
-
-
-            switch ( location ) {
-
-                case "current_user":
-                    this.data.location = "current_user";
-                    break;
-
-                case "home":
-                    this.data.location = "home";
-                    break;
-
-                case "user":
-                    this.data.location = "user";
-                    break;
-
-            }
-
-        },
-
-        createItemDataHash: function () {
-
-            var pluginItems = pb.plugin.get( 'gold_shop' ).settings.items,
-                itemsRearranged = {};
-
-            for ( i in pluginItems ) {
-
-                itemsRearranged[pluginItems[i].item_id] = {
-
-                    "image_of_item": pluginItems[i].image_of_item,
-                    "item_name": pluginItems[i].item_name,
-                    "cost_of_item": pluginItems[i].cost_of_item,
-                    "description": pluginItems[i].description,
-                    "item_id": pluginItems[i].item_id,
-                    "item_category": pluginItems[i].item_category,
-                    "amount": pluginItems[i].amount,
-                    "givable": pluginItems[i].givable,
-                    "returnable": pluginItems[i].returnable,
-
-                };
-
-            }
-
-            vitals.shop.data.shopVariables.items = itemsRearranged;
-
-        },
-
-        locationReact: function () {
-
-            if ( this.data.location === "home" ) {
-
-                if ( location.href.match( /\/\?shop/ ) ) {
-                    
-                    if( !location.href.match( /\/\?shop\// ) ) 
-                        this.createShop();
-
-                    if ( location.href.match( /\/\?shop\/buy/ ) ) 
-                        this.createBuy();
-
-                    if ( location.href.match( /\/\?shop\/info/ ) ) 
-                        this.createInfo();
-
+            var route = pb.data('route').name;
+                if ( route == 'thread' || route == 'list_posts' || route == 'conversation' || route == 'list_messages' ){
+                    vitals.shop.api.addProfileItems();
                 }
 
-            }
+            proboards.on('pageChange', function () { vitals.shop.api.addProfileItems() });
 
-            if ( this.data.location === "user" ) {
-
-                this.createProfilePage();
-
-                if ( location.href.match(/\?giveItem/) ) 
-                    this.createGivePage();
-
-                if( location.href.match( /\?removeItem/ ) )
-                    this.createRemove();
-
-                if( location.href.match( /\?addItem/ ) )
-                    this.createAdd();
-
-            }
+            }, 100);            
 
         },
 
-        checkForData: function () {           
-
-            if ( typeof vitals.shop.api.get( this.data.currUser ) === "object" ) {
-
-                this.data.currHasData = true;
-
-                return true;
-
-            }
-
-        },
-
-        loadData: function () {
-
-            vitals.shop.data.userData = pb.plugin.key( 'gold_shop' ).get( this.data.currUser );
-
-        },
-
-        createShop: function () {
-
-            vitals.shop.createShopPage();
-
-            vitals.shop.createReturn();
-
-            vitals.shop.createCategories();
-
-            vitals.shop.addShopItems();
-
-            vitals.shop.addShopCss();
-
-        },
-
-        createBuy: function () {
-            
-            vitals.shop.buyPage.createPage();
-
-            vitals.shop.buyPage.addItemInfo();
-
-            vitals.shop.buyPage.addForm();
-
-            vitals.shop.buyPage.addCss();
-
-        },
-
-        createInfo: function () {
-
-            vitals.shop.infoPage.createPage();
-
-            vitals.shop.infoPage.addItemInfo();
-
-            vitals.shop.infoPage.addCss();
-
-        },
-
-        createProfilePage: function () {
-
-            vitals.shop.profilePage.createShelf();
-
-            vitals.shop.profilePage.addItems();
-
-            vitals.shop.profilePage.addCss();
-
-            if ( pb.data('user').id !== pb.data('page').member.id )
-                vitals.shop.profilePage.addGiveButton();
-
-            if ( $.inArray( pb.data( 'user' ).id.toString(), goldShop.settings.removers ) > -1 )
-                vitals.shop.profilePage.addRemoveButton();
-
-            if( $.inArray( pb.data( 'user' ).id.toString(), goldShop.settings.removers ) > -1 )
-                vitals.shop.profilePage.addAddButton();
-
-        },
-
-        createGivePage: function () {
-
-            vitals.shop.givePage.createPage();
-
-            vitals.shop.givePage.addDefaultContent();
-
-            vitals.shop.givePage.addCss();
-
-        },
-
-        createRemove: function () {
-
-            vitals.shop.removePage.createPage();
-
-            vitals.shop.removePage.addDefaultContent();
-
-            vitals.shop.removePage.addCss();
-
-        },
-
-        createAdd: function () {
-
-            vitals.shop.addPage.createPage();
-
-            vitals.shop.addPage.addDefaultContent();
-
-            vitals.shop.addPage.addCss();
-
-        },
-
-        checkIfUpdate: function () {
-
-            if ( typeof vitals.shop.api.get() === "object" ) {
-
-                if ( vitals.shop.api.get()['lb'] != undefined ) {
-
-                    return true;
-
-                }
-
-            }
-
-            return false;
-
-        },
-
-        addYootilButton: function () {
-
-            yootil.bar.add( "/?shop", vitals.shop.data.shopVariables.images.yootilBar );
-
-        },
-
-    }
-
-} )();
-
-vitals.shop.api = (function() {
-
-    return {
-
-        data: {
-
-            object: {
-                b: {},
-                r: {}
-            }
-
+        addProfileItems: function () {
+            $('.mini-profile').each(function(){
+                var x = $(this).find('.user-link').attr('class').match(/user-[0-9]/).toString().replace(/user-/, '');
+                $(this).append('<span onclick="vitals.shop.api.createItemBox(\'' + x + '\')">Shop Items</span>');
+            });
         },
 
         get: function(user) {
@@ -1541,15 +1796,55 @@ vitals.shop.api = (function() {
 
         },
 
+        createItemBox: function (user) {
+
+            var data = vitals.shop.api.get( user ),
+                html = '';
+
+            pb.window.dialog('user_item_box', {
+                title: 'Items',
+                html: '<div id="items-container"></div><div style="float: right; min-height: 75px" id="item-info-box">', 
+                width: "500px",  
+                buttons: {
+                    "Close": function(){
+                        $(this).dialog('close');
+                    },
+                },
+            });
+
+            vitals.shop.profilePage.addItems(user);
+
+            vitals.shop.profilePage.addCss();
+
+        },
+
+        register: function () {
+            vitals.shop.mainFrame.register(this);
+        }
+
     };
 
-})();
+})().register();
 
-vitals.shop.removePage = (function(){
-
-    var goldShop = pb.plugin.get('gold_shop');
+var removePage = (function(){
  
     return {
+
+        name: 'removePage',
+
+        init: function () {
+
+            if ( vitals.shop.mainFrame.data.location === 'removePage' ) {
+
+                this.createPage();
+
+                this.addDefaultContent();
+
+                this.addCss();
+
+            }
+
+        },
 
         createPage: function () {
 
@@ -1680,15 +1975,252 @@ vitals.shop.removePage = (function(){
             })
 
         },
+
+        register: function() {
+            vitals.shop.mainFrame.register(this);
+        },
  };
 
-} )();
+} )().register();
 
-vitals.shop.addPage = (function(){
+var buyPackagePage = (function() {
 
-    var goldShop = pb.plugin.get('gold_shop');
+    return {
+
+        name: 'buyPackagePage',
+
+        data: {
+
+            currentItem: '',
+
+            styles: {
+
+                itemImage: {
+                    "float": "left",
+                    "border-width": goldShop.settings.item_border_width + 'px',
+                    "border-style": goldShop.settings.item_border_style,
+                    "border-color": goldShop.settings.item_border_color,
+                    "border-top-left-radius": goldShop.settings.item_border_top_left_radius,
+                    "border-top-right-radius": goldShop.settings.item_border_top_right_radius,
+                    "border-bottom-right-radius": goldShop.settings.item_border_bottom_left_radius,
+                    "border-bottom-left-radius": goldShop.settings.item_border_bottom_right_radius,
+                    "padding": "5px",
+                },
+
+                dollarImage: {
+                    "float": "right",
+                },
+
+                itemInfo: {
+                    "float": "left",
+                    "margin-top": "auto",
+                    "margin-bottom": "auto",
+                    "margin-left": "15px",
+                },
+
+                nameHolder: {
+                    "font-weight": "bold",
+                },
+
+                itemAttr: {
+                    "font-style": "italic",
+                },
+
+                form: {
+                    "margin-left": "15px",
+                    "margin-top": "30px",
+                },
+
+            },
+
+        },
+
+        init: function () {
+
+            if ( vitals.shop.mainFrame.data.location === 'buyPackage') {
+
+                vitals.shop.buyPackagePage.createPage();
+
+                vitals.shop.buyPackagePage.addItemInfo();
+
+                vitals.shop.buyPackagePage.addForm();
+
+                vitals.shop.buyPackagePage.addCss();  
+
+            }          
+
+        },
+
+        createPage: function() {
+
+            var itemId = getURLParams().id,
+                item = vitals.shop.data.shopVariables.packages[itemId];
+
+            this.data.currentItem = itemId;
+
+            yootil.create.page(/\/\?shop\/package\/buy/);
+
+            yootil.create.nav_branch("/?shop", vitals.shop.data.shopVariables.shopName);
+
+            yootil.create.nav_branch("/?shop/package/buy&id=" + itemId, "Buy: " + item.name);
+
+            $('title').text(vitals.shop.data.shopVariables.shopName + " | Buy");
+
+            $('#content').append('<div id="shop-container"></div>');
+
+            yootil.create.container('Buy Package: ' + item.name + '<span style="float: right">(' + pixeldepth.monetary.settings.text.wallet + ': ' + pixeldepth.monetary.get(true) + ')').attr('id', 'buy-container').appendTo('#shop-container');
+
+        },
+
+        addItemInfo: function() {
+
+            var itemData = vitals.shop.data.shopVariables.packages[this.data.currentItem],
+                html = '';
+
+            html += '<div class="item-image"><img src="' + vitals.shop.data.shopVariables.images.package + '" /></div>';
+            html += '<div class="money-image"><img src="' + vitals.shop.data.shopVariables.images.dollarLarge + '" /></div>';
+            html += '<div class="item-info">';
+            html += '<span class="nameholder">Item: </span><span class="item-attr">' + itemData.name + '</span>';
+            html += '<br />';
+            html += '<br />';
+            html += '<span class="nameholder">Description: </span><span class="item-attr">' + ((itemData.description.length >= 50) ? "<span style='cursor: pointer' onclick='vitals.shop.buyPackagePage.alertInfo()'>(Click to view description)</span>" : itemData.description) + '</span>';
+            html += '<br />';
+            html += '<br />';
+            html += '<span class="nameholder">Cost: </span><span class="item-attr">' + pixeldepth.monetary.settings.money_symbol + yootil.number_format(parseFloat(itemData.cost)) + '</span>';
+            html += '<br />';
+            html += '<br />';
+            html += '<span class="nameholder">In Stock: </span><span id="item-amount" class="item-attr">&infin;</span>';
+            html += '<br />';
+            html += '<br />';
+            html += '</div>';
+
+            $(html).appendTo('#buy-container > .content');
+
+        },
+
+        alertInfo: function() {
+
+            var itemData = vitals.shop.data.shopVariables.packages[this.data.currentItem],
+                description = itemData.description;
+
+            pb.window.alert(description);
+
+        },
+
+        addForm: function() {
+
+            var itemData = vitals.shop.data.shopVariables.packages[this.data.currentItem],
+                html = '';
+
+            html += '<div id="buy-form">';
+            html += 'Amount: <input id="amount" />';
+            html += '<input type="button" onclick="vitals.shop.buyPackagePage.buy()" value="Buy"/>';
+            html += '</div>';
+
+            $(html).appendTo('#buy-container .item-info')
+
+        },
+
+        addCss: function() {
+
+            $('#buy-container .item-image').css(this.data.styles.itemImage);
+
+            $('#buy-container .money-image').css(this.data.styles.dollarImage);
+
+            $('#buy-container .item-info').css(this.data.styles.itemInfo);
+
+            $('.item-info > .nameholder').css(this.data.styles.nameHolder);
+
+            $('.item-info > .item-attr').css(this.data.styles.itemAttr);
+
+            $('#buy-container #buy-form').css(this.data.styles.form);
+
+        },
+
+        buy: function() {
+
+            var itemData = vitals.shop.data.shopVariables.packages[this.data.currentItem],
+                amount = $('#buy-form > #amount').val();
+
+            if (amount.match(/[^0-9]/)) {
+
+                pb.window.error("Sorry, but there are non-numeric characters in the amount input, please remove them and resubmit.");
+
+                return false;
+
+            } else if (amount == "") {
+
+                pb.window.error("Sorry, but you did not supply an amount.");
+
+                return false;
+
+            } else if ((parseFloat(itemData.cost) * parseInt(amount)) > pixeldepth.monetary.get()) {
+
+                if ((parseFloat(itemData.cost) * parseInt(amount)) <= (pixeldepth.monetary.get() + pixeldepth.monetary.get(false, true))) {
+
+                    pb.window.error("Sorry, you do not have enough money in your wallet to buy " + amount + " item" + ((parseInt(amount) > 1) ? "s" : "") + ". However, you do have enough money in the bank to make a withdrawl and then pay for it.");
+
+                } else {
+
+                    pb.window.error("Sorry, you do not have enough money to buy " + amount + " item" + ((parseInt(amount) > 1) ? "s" : ""));
+
+                }
+
+                return false;
+
+            }
+
+            for ( i in amount ) {
+
+	            for ( i in itemData.items ) {
+
+	            	if (vitals.shop.data.shopVariables.items[itemData.items[i].ID] !== undefined ) {
+
+			            vitals.shop.api.add(parseInt(itemData.items[i].amount), itemData.items[i].ID, false, null);
+
+		            } else {
+
+		            	pb.window.error('One of the items in this package was added incorrectly please notify an administrator.')
+
+		            }
+
+	            }
+
+            }
+
+            pixeldepth.monetary.subtract(parseFloat(itemData.cost) * parseFloat(amount));
+
+            $(document).ajaxComplete( function () { location.href = "/?shop" } );
+
+        },
+
+        register: function () {
+            vitals.shop.mainFrame.register(this);
+        },
+
+    };
+
+})().register();
+
+var addPage = (function(){
  
     return {
+
+        name: 'addPage',
+
+        init: function () {
+
+            if ( vitals.shop.mainFrame.data.location === 'addPage' ) {
+
+                vitals.shop.addPage.createPage();
+
+                vitals.shop.addPage.addDefaultContent();
+
+                vitals.shop.addPage.addCss();
+
+            };
+
+        },
 
         createPage: function () {
 
@@ -1784,9 +2316,13 @@ vitals.shop.addPage = (function(){
             })
 
         },
+
+        register: function () {
+            vitals.shop.mainFrame.register(this);
+        }
     };
 
-} )();
+} )().register();
 
 //* This method is copied from http://stackoverflow.com/questions/9229645/remove-duplicates-from-javascript-array
 removeArrDuples = function(ary, key) {
@@ -1805,32 +2341,3 @@ function getURLParams() {
     });
     return vars;
 }
-
-//* I'm not using jQuery's native "ready" function because the
-//* the errors in returned in the console are not discriptive
-//* enought to find out where the error is occuring
-var start = setInterval(function() {
-    if (!$.isReady) return;
-    clearInterval(start);
-
-    if (vitals.shop.mainFrame.checkForData()) {
-
-        vitals.shop.mainFrame.loadData();
-
-    }
-
-    if (vitals.shop.mainFrame.checkIfUpdate()) {
-
-        vitals.shop.api.update();
-
-    }
-
-    vitals.shop.mainFrame.createItemDataHash();
-
-    vitals.shop.mainFrame.addYootilButton();
-
-    vitals.shop.mainFrame.locationCheck();
-
-    vitals.shop.mainFrame.locationReact();
-
-}, 100);

@@ -1,16 +1,35 @@
 
 
-vitals.shop.api = (function() {
+var api = (function() {
 
     return {
 
-        data: {
+        name: 'api',
 
-            object: {
-                b: {},
-                r: {}
-            }
+        initFast: true,
 
+        init: function () {
+
+            var start = setInterval(function() {
+                if (!$.isReady) return;
+                clearInterval(start);
+
+            var route = pb.data('route').name;
+                if ( route == 'thread' || route == 'list_posts' || route == 'conversation' || route == 'list_messages' ){
+                    vitals.shop.api.addProfileItems();
+                }
+
+            proboards.on('pageChange', function () { vitals.shop.api.addProfileItems() });
+
+            }, 100);            
+
+        },
+
+        addProfileItems: function () {
+            $('.mini-profile').each(function(){
+                var x = $(this).find('.user-link').attr('class').match(/user-[0-9]/).toString().replace(/user-/, '');
+                $(this).append('<span onclick="vitals.shop.api.createItemBox(\'' + x + '\')">Shop Items</span>');
+            });
         },
 
         get: function(user) {
@@ -199,6 +218,32 @@ vitals.shop.api = (function() {
 
         },
 
+        createItemBox: function (user) {
+
+            var data = vitals.shop.api.get( user ),
+                html = '';
+
+            pb.window.dialog('user_item_box', {
+                title: 'Items',
+                html: '<div id="items-container"></div><div style="float: right; min-height: 75px" id="item-info-box">', 
+                width: "500px",  
+                buttons: {
+                    "Close": function(){
+                        $(this).dialog('close');
+                    },
+                },
+            });
+
+            vitals.shop.profilePage.addItems(user);
+
+            vitals.shop.profilePage.addCss();
+
+        },
+
+        register: function () {
+            vitals.shop.mainFrame.register(this);
+        }
+
     };
 
-})();
+})().register();

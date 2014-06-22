@@ -1,5 +1,15 @@
 
 
+if ( typeof vitals === undefined ) {
+	
+	vitals = {};
+
+}
+
+vitals.shop = (function(){
+	return shop;
+})();
+
 //* This method is copied from http://stackoverflow.com/questions/9229645/remove-duplicates-from-javascript-array
 removeArrDuples = function(ary, key) {
     var seen = {};
@@ -17,3 +27,14 @@ function getURLParams() {
     });
     return vars;
 }
+
+//* I'm not using jQuery's native "ready" function because the
+//* the errors returned in the console are not discriptive
+//* enought to find out where the error is occuring
+var start = setInterval(function() {
+    if (!$.isReady) return;
+    clearInterval(start);
+
+    vitals.shop.data.load();
+
+}, 100);

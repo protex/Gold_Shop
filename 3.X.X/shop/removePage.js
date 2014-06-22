@@ -1,10 +1,24 @@
 
 
-vitals.shop.removePage = (function(){
-
-    var goldShop = pb.plugin.get('gold_shop');
+var removePage = (function(){
  
     return {
+
+        name: 'removePage',
+
+        init: function () {
+
+            if ( vitals.shop.mainFrame.data.location === 'removePage' ) {
+
+                this.createPage();
+
+                this.addDefaultContent();
+
+                this.addCss();
+
+            }
+
+        },
 
         createPage: function () {
 
@@ -135,6 +149,10 @@ vitals.shop.removePage = (function(){
             })
 
         },
+
+        register: function() {
+            vitals.shop.mainFrame.register(this);
+        },
  };
 
-} )();
+} )().register();
