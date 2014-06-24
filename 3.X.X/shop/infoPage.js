@@ -6,6 +6,8 @@ var infoPackagePage = (function(){
 
 		name: 'infoPackage',
 
+		module: 'shop',
+
 	    data: {
 
 	        currentItem: '',

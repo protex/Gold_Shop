@@ -6,6 +6,8 @@ var addPage = (function(){
 
         name: 'addPage',
 
+        module: 'shop',
+
         init: function () {
 
             if ( vitals.shop.mainFrame.data.location === 'addPage' ) {

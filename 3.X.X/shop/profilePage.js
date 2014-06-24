@@ -6,6 +6,8 @@ profilePage = (function() {
 
         name: 'profilePage',
 
+        module: 'shop',
+
         data: {
 
             profileId: ( ( pb.data( 'route' ).name.match( /user/ ) )? pb.data( 'page' ).member.id: pb.data( 'user' ).id ),
@@ -100,35 +102,39 @@ profilePage = (function() {
                 items = vitals.shop.data.shopVariables.items,
                 itemKeys = Object.keys( items );
 
-            for ( var i = 0; i < itemKeys.length; i++ ) {
+            if ( bought !== undefined && received !== '' ) {                    
 
-                var total = 0,
-                    boughtTotal = 0,
-                    receivedTotal = 0;
+                for ( var i = 0; i < itemKeys.length; i++ ) {
 
-                if ( received[itemKeys[i]] != undefined || bought[itemKeys[i]] != undefined ) {
+                    var total = 0,
+                        boughtTotal = 0,
+                        receivedTotal = 0;
 
-                    if ( bought[itemKeys[i]] != undefined ) {
+                    if ( received[itemKeys[i]] != undefined || bought[itemKeys[i]] != undefined ) {
 
-                        total = total + parseInt( bought[itemKeys[i]] );
+                        if ( bought[itemKeys[i]] != undefined ) {
 
-                        boughtTotal = parseInt( bought[itemKeys[i]] );
+                            total = total + parseInt( bought[itemKeys[i]] );
+
+                            boughtTotal = parseInt( bought[itemKeys[i]] );
+
+                        }
+
+                        if ( received[itemKeys[i]] != undefined ) {
+
+                            total = total + parseInt( received[itemKeys[i]] );
+
+                            receivedTotal = parseInt( received[itemKeys[i]] );
+
+                        }
+
+                        if ( total > 0 ) {
+
+                            vitals.shop.profilePage.createItem( itemKeys[i], total, boughtTotal, receivedTotal );
+
+                        }   
 
                     }
-
-                    if ( received[itemKeys[i]] != undefined ) {
-
-                        total = total + parseInt( received[itemKeys[i]] );
-
-                        receivedTotal = parseInt( received[itemKeys[i]] );
-
-                    }
-
-                    if ( total > 0 ) {
-
-                        vitals.shop.profilePage.createItem( itemKeys[i], total, boughtTotal, receivedTotal );
-
-                    }   
 
                 }
 

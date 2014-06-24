@@ -6,6 +6,8 @@ var api = (function() {
 
         name: 'api',
 
+        module: 'shop',
+
         initFast: true,
 
         init: function () {
@@ -126,6 +128,15 @@ var api = (function() {
             if (user == undefined || user == null)
                 user = pb.data('user').id; 
 
+            if( typeof this.get( user ) !== "object" )
+                this.set( { 
+                    object_id: user, 
+                    value: { 
+                        b:{}, 
+                        r:{} 
+                    } 
+                } );            
+
             if ( given == true )
                 type = "r";
             else 
@@ -149,15 +160,6 @@ var api = (function() {
             if (user == undefined || user == null)
                 user = pb.data('user').id;
 
-            if( typeof this.get( user ) !== "object" )
-                this.set( { 
-                    object_id: user, 
-                    value: { 
-                        b:{}, 
-                        r:{} 
-                    } 
-                } );
-
             if (this.get( user )[type][id] != undefined) {
 
                 this.get( user )[type][id] = ( parseInt(this.get( user )[type][id]) + 1 );
@@ -173,7 +175,18 @@ var api = (function() {
         subtract: function(amount, id, given, user) {
 
             if (user == undefined || user == null)
-                user = pb.data('user').id;;       
+                user = pb.data('user').id;
+
+            if ( typeof this.get( user ) !== "object" ) {
+                this.set( { 
+                    object_id: user, 
+                    value: { 
+                        b:{}, 
+                        r:{} 
+                    } 
+                } );   
+                return false;
+            }                  
 
             for (var i = 0; i < amount; i++) {
 
@@ -182,6 +195,8 @@ var api = (function() {
 
                 }else if ( this.get( user).b[id] === undefined || given === true )
                     this.decrement( id, "r", user );
+                else if ( given === true && this.get(user).r[id] === undefined )
+                    this.decrement( id, "b", user)
 
             }
 
@@ -196,15 +211,6 @@ var api = (function() {
 
             if (user == undefined || user == null)
                 user = pb.data('user').id;
-
-            if ( typeof this.get( user ) !== "object" )
-                this.set( { 
-                    object_id: user, 
-                    value: { 
-                        b:{}, 
-                        r:{} 
-                    } 
-                } );
 
             if (this.get( user )[type][id] !== undefined) {
 
@@ -238,6 +244,17 @@ var api = (function() {
 
             vitals.shop.profilePage.addCss();
 
+        },
+
+        removeNavItem: function (reg) {
+            var reg = new RegExp("^" + reg + "$");
+
+            $('.nav-tree-branch').each(function(){
+                if ( $(this).text().match(reg) )
+                    $(this).remove();
+            })
+
+            return vitals.shop.api;
         },
 
         register: function () {

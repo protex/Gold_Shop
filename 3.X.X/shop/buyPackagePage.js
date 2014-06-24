@@ -6,6 +6,8 @@ var buyPackagePage = (function() {
 
         name: 'buyPackagePage',
 
+        module: 'shop',
+
         data: {
 
             currentItem: '',
