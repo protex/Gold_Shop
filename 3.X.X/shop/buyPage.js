@@ -6,8 +6,6 @@ var buyPage = (function() {
 
         name: 'buyPage',
 
-        module: 'shop',
-
         data: {
 
             currentItem: '',

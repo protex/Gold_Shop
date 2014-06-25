@@ -143,9 +143,7 @@ vitals.shop = {
             },
 
         },
-};
-
-var mainFrame = ( function () {
+};var mainFrame = ( function () {
 
     return {
 
@@ -425,31 +423,29 @@ var shopPage = (function () {
 
     return {
 
-    	name: 'shopPage',
-
-        module: 'shop',
+        name: 'shopPage',
 
         init: function () {
 
             if ( vitals.shop.mainFrame.data.location === "shop" ) {
 
-	            this.createShopPage();
+                this.createShopPage();
 
-	            this.createReturn();
+                this.createReturn();
 
-	            this.createCatBar();
+                this.createCatBar();
 
-	            this.createCategories();            
+                this.createCategories();            
 
-	            if ( Object.keys( vitals.shop.data.shopVariables.packages ).length > 0 ) {
+                if ( Object.keys( vitals.shop.data.shopVariables.packages ).length > 0 ) {
 
-	                this.addPackageItems();
+                    this.addPackageItems();
 
-	            }
+                }
 
-	            this.addShopItems();
+                this.addShopItems();
 
-	            this.addShopCss();  
+                this.addShopCss();  
 
             }          
 
@@ -801,8 +797,6 @@ var buyPage = (function() {
 
         name: 'buyPage',
 
-        module: 'shop',
-
         data: {
 
             currentItem: '',
@@ -1029,13 +1023,23 @@ var buyPage = (function() {
 
 })().register();
 
-var infoPackagePage = (function(){ 
+
+
+var infoPage = (function(){ 
+
+	var goldShop = pb.plugin.get( 'gold_shop');
 
 	return {
 
-		name: 'infoPackage',
+		name: 'infoPage',
 
-		module: 'shop',
+		init: function () {
+			if( vitals.shop.mainFrame.data.location === 'infoPage') {
+				this.createPage();
+				this.addItemInfo();
+				this.addCss();
+			}
+		},
 
 	    data: {
 
@@ -1078,70 +1082,68 @@ var infoPackagePage = (function(){
 
 	    },
 
-	    init: function () {
-
-	    	if( location.href.match(/\?shop\/package\/info/) ) {
-
-	            this.createPage();
-
-	            this.addItemInfo();
-
-	            this.addCss();
-
-	        }
-
-	    },
-
 	    createPage: function () {
 
 	        var itemId = getURLParams().id,
-	            item = vitals.shop.data.shopVariables.packages[itemId];
+	            item = vitals.shop.data.shopVariables.items[itemId];
 
 	        this.data.currentItem = itemId;
 
-	        yootil.create.page( /\/\?shop\/package\/info/ );
+	        yootil.create.page( /\/\?shop\/info/ );
 
 	        yootil.create.nav_branch( "/?shop", vitals.shop.data.shopVariables.shopName );
 
-	        yootil.create.nav_branch( "/?shop/package/info&id=" + itemId, "Info: " + item.name );
+	        yootil.create.nav_branch( "/?shop/info&id=" + itemId, "Info: " + item.item_name );
 
 	        $( 'title' ).text( vitals.shop.data.shopVariables.shopName + " | Info" );
 
 	        $( '#content' ).append( '<div id="shop-container"></div>' );
 
-	        yootil.create.container( 'Info Item: ' + item.name + '<span style="float: right">(' + pixeldepth.monetary.settings.text.wallet + ': ' + pixeldepth.monetary.get( true ) + ')' ).attr( 'id', 'info-container' ).appendTo( '#shop-container' );
+	        yootil.create.container( 'Info Item: ' + item.item_name + '<span style="float: right">(' + pixeldepth.monetary.settings.text.wallet + ': ' + pixeldepth.monetary.get( true ) + ')' ).attr( 'id', 'info-container' ).appendTo( '#shop-container' );
 
 	    },
 
 	    addItemInfo: function () {
 
-	        var itemData = vitals.shop.data.shopVariables.packages[this.data.currentItem],
+	        var itemData = vitals.shop.data.shopVariables.items[this.data.currentItem],
 	            html = '',
-	            itemList = '';
+	            userItems = vitals.shop.data.userData,
+	            userBought = ( userItems.b[this.data.currentItem] != undefined ) ? userItems.b[this.data.currentItem] : 0,
+	            userReceived = ( userItems.r[this.data.currentItem] != undefined ) ? userItems.r[this.data.currentItem] : 0,
+	            userTotal = parseInt( userBought + userReceived ),
+	            inStock = itemData.amount - userTotal;
 
-	        for ( i in itemData.items ) {
-	        	itemList += itemData.items[i].name + ', ';
-	        }
+	        if ( inStock < 0 )
+	        	inStock = 0;
 
-	        html += '<div class="item-image"><img src="' + vitals.shop.data.shopVariables.images.package + '" /></div>';
-	        html += '<div class="info-image"><img src="' + vitals.shop.data.shopVariables.images.infoLarge + '" /></div>';
+	        if( itemData.amount === "" )
+	        	inStock = "&infin;";
+
+	        html += '<div class="item-image"><img src="' + itemData.image_of_item + '" /></div>';
+	        html += '<div class="money-image"><img src="' + vitals.shop.data.shopVariables.images.infoLarge + '" /></div>';
 	        html += '<div class="item-info">';
-	        html += '<span class="nameholder">Package Name: </span><span class="item-attr">' + itemData.name + '</span>';
+	        html += '<span class="nameholder">Item: </span><span class="item-attr">' + itemData.item_name + '</span>';
 	        html += '<br />';
 	        html += '<br />';
-	        html += '<span class="nameholder">Description: </span><span class="item-attr">' + ( ( itemData.description.length >= 50 ) ? "<span style='cursor: pointer' onclick='this.alertInfo()'>(Click to view description)</span>" : itemData.description ) + '</span>';
+	        html += '<span class="nameholder">Description: </span><span class="item-attr">' + ( ( itemData.description.length >= 50 ) ? "<span style='cursor: pointer' onclick='vitals.shop.infoPage.alertInfo()'>(Click to view description)</span>" : itemData.description ) + '</span>';
 	        html += '<br />';
 	        html += '<br />';
-	        html += '<span class="nameholder">Cost: </span><span class="item-attr">' + pixeldepth.monetary.settings.money_symbol + yootil.number_format( parseFloat( itemData.cost ) ) + '</span>';
+	        html += '<span class="nameholder">Cost: </span><span class="item-attr">' + pixeldepth.monetary.settings.money_symbol + yootil.number_format( parseFloat( itemData.cost_of_item ) ) + '</span>';
 	        html += '<br />';
 	        html += '<br />';
-	        html += '<span class="nameholder">In Stock: </span><span id="item-amount" class="item-attr">&infin;</span>';
+	        html += '<span class="nameholder">In Stock: </span><span id="item-amount" class="item-attr">' + inStock + '</span>';
 	        html += '<br />';
 	        html += '<br />';
-	        html += '<span class="nameholder">ID: </span><span class="item-attr">' + itemData.ID + '</span>';
+	        html += '<span class="nameholder">Category: </span><span class="item-attr">' + itemData.item_category + '</span>';
 	        html += '<br />';
 	        html += '<br />';
-	        html += '<span class="nameholder">Items in Package: </span><span class="item-attr">' + itemList + '</span>';
+	        html += '<span class="nameholder">Returnable: </span><span class="item-attr">' + ( ( itemData.returnable == "true" )? "Yes": "No" ) + '</span>';
+	        html += '<br />';
+	        html += '<br />';
+	        html += '<span class="nameholder">Giveable: </span><span class="item-attr">' + ( ( itemData.givable == "true" )? "Yes": "No" ) + '</span>';
+	        html += '<br />';
+	        html += '<br />';
+	        html += '<span class="nameholder">ID: </span><span class="item-attr">' + itemData.item_id + '</span>';
 	        html += '</div>';
 
 	        $( html ).appendTo( '#info-container > .content' );
@@ -1150,7 +1152,7 @@ var infoPackagePage = (function(){
 
 	    alertInfo: function () {
 
-	        var itemData = vitals.shop.data.shopVariables.packages[this.data.currentItem],
+	        var itemData = vitals.shop.data.shopVariables.items[this.data.currentItem],
 	            description = itemData.description;
 
 	        pb.window.alert( description );
@@ -1161,7 +1163,7 @@ var infoPackagePage = (function(){
 
 	        $( '#info-container .item-image' ).css( this.data.styles.itemImage );
 
-	        $( '#info-container .info-image' ).css( this.data.styles.dollarImage );
+	        $( '#info-container .money-image' ).css( this.data.styles.dollarImage );
 
 	        $( '#info-container .item-info' ).css( this.data.styles.itemInfo );
 
@@ -1173,9 +1175,9 @@ var infoPackagePage = (function(){
 
 	    register: function () {
 	    	vitals.shop.mainFrame.register(this);
-	    },
+	    }
 
-    };
+    }
 
 } )().register();
 
@@ -1424,6 +1426,156 @@ profilePage = (function() {
 } )().register();
 
 
+
+var infoPackagePage = (function(){ 
+
+	return {
+
+		name: 'infoPackage',
+
+		module: 'shop',
+
+	    data: {
+
+	        currentItem: '',
+
+	        styles: {
+
+	            itemImage: {
+	                "float": "left",
+	                "border-width": goldShop.settings.item_border_width + 'px',
+	                "border-style": goldShop.settings.item_border_style,
+	                "border-color": goldShop.settings.item_border_color,
+	                "border-top-left-radius": goldShop.settings.item_border_top_left_radius,
+	                "border-top-right-radius": goldShop.settings.item_border_top_right_radius,
+	                "border-bottom-right-radius": goldShop.settings.item_border_bottom_left_radius,
+	                "border-bottom-left-radius": goldShop.settings.item_border_bottom_right_radius,
+	                "padding": "5px",
+	            },
+
+	            dollarImage: {
+	                "float": "right",
+	            },
+
+	            itemInfo: {
+	                "float": "left",
+	                "margin-top": "auto",
+	                "margin-bottom": "auto",
+	                "margin-left": "15px",
+	            },
+
+	            nameHolder: {
+	                "font-weight": "bold",
+	            },
+
+	            itemAttr: {
+	                "font-style": "italic",
+	            },
+
+	        },
+
+	    },
+
+	    init: function () {
+
+	    	if( location.href.match(/\?shop\/package\/info/) ) {
+
+	            this.createPage();
+
+	            this.addItemInfo();
+
+	            this.addCss();
+
+	        }
+
+	    },
+
+	    createPage: function () {
+
+	        var itemId = getURLParams().id,
+	            item = vitals.shop.data.shopVariables.packages[itemId];
+
+	        this.data.currentItem = itemId;
+
+	        yootil.create.page( /\/\?shop\/package\/info/ );
+
+	        yootil.create.nav_branch( "/?shop", vitals.shop.data.shopVariables.shopName );
+
+	        yootil.create.nav_branch( "/?shop/package/info&id=" + itemId, "Info: " + item.name );
+
+	        $( 'title' ).text( vitals.shop.data.shopVariables.shopName + " | Info" );
+
+	        $( '#content' ).append( '<div id="shop-container"></div>' );
+
+	        yootil.create.container( 'Info Item: ' + item.name + '<span style="float: right">(' + pixeldepth.monetary.settings.text.wallet + ': ' + pixeldepth.monetary.get( true ) + ')' ).attr( 'id', 'info-container' ).appendTo( '#shop-container' );
+
+	    },
+
+	    addItemInfo: function () {
+
+	        var itemData = vitals.shop.data.shopVariables.packages[this.data.currentItem],
+	            html = '',
+	            itemList = '';
+
+	        for ( i in itemData.items ) {
+	        	itemList += itemData.items[i].name + ', ';
+	        }
+
+	        html += '<div class="item-image"><img src="' + vitals.shop.data.shopVariables.images.package + '" /></div>';
+	        html += '<div class="info-image"><img src="' + vitals.shop.data.shopVariables.images.infoLarge + '" /></div>';
+	        html += '<div class="item-info">';
+	        html += '<span class="nameholder">Package Name: </span><span class="item-attr">' + itemData.name + '</span>';
+	        html += '<br />';
+	        html += '<br />';
+	        html += '<span class="nameholder">Description: </span><span class="item-attr">' + ( ( itemData.description.length >= 50 ) ? "<span style='cursor: pointer' onclick='this.alertInfo()'>(Click to view description)</span>" : itemData.description ) + '</span>';
+	        html += '<br />';
+	        html += '<br />';
+	        html += '<span class="nameholder">Cost: </span><span class="item-attr">' + pixeldepth.monetary.settings.money_symbol + yootil.number_format( parseFloat( itemData.cost ) ) + '</span>';
+	        html += '<br />';
+	        html += '<br />';
+	        html += '<span class="nameholder">In Stock: </span><span id="item-amount" class="item-attr">&infin;</span>';
+	        html += '<br />';
+	        html += '<br />';
+	        html += '<span class="nameholder">ID: </span><span class="item-attr">' + itemData.ID + '</span>';
+	        html += '<br />';
+	        html += '<br />';
+	        html += '<span class="nameholder">Items in Package: </span><span class="item-attr">' + itemList + '</span>';
+	        html += '</div>';
+
+	        $( html ).appendTo( '#info-container > .content' );
+
+	    },
+
+	    alertInfo: function () {
+
+	        var itemData = vitals.shop.data.shopVariables.packages[this.data.currentItem],
+	            description = itemData.description;
+
+	        pb.window.alert( description );
+
+	    },
+
+	    addCss: function () {
+
+	        $( '#info-container .item-image' ).css( this.data.styles.itemImage );
+
+	        $( '#info-container .info-image' ).css( this.data.styles.dollarImage );
+
+	        $( '#info-container .item-info' ).css( this.data.styles.itemInfo );
+
+	        $( '.item-info > .nameholder' ).css( this.data.styles.nameHolder );
+
+	        $( '.item-info > .item-attr' ).css( this.data.styles.itemAttr );
+
+	    },
+
+	    register: function () {
+	    	vitals.shop.mainFrame.register(this);
+	    },
+
+    };
+
+} )().register();
 
 var givePage = (function(){
  
@@ -1838,16 +1990,24 @@ var api = (function() {
 
         },
 
-        removeNavItem: function (reg) {
-            var reg = new RegExp("^" + reg + "$");
+        removeNavItem: function (args) {
 
-            $('.nav-tree-branch').each(function(){
-                if ( $(this).text().match(reg) )
-                    $(this).remove();
-            })
+            var array
+                _nav = $('#nav-tree');
+
+            if ( Object.prototype.toString.call(args) !== "[object Array]" )
+                array = new Array(args);
+            else
+                array = args;
+
+            for ( i in array ) { 
+
+                _nav.find('[href="' + array[i].toString() + '"]').parentsUntil('#nav-tree').remove();
+
+            }       
 
             return vitals.shop.api;
-        },
+        },        
 
         register: function () {
             vitals.shop.mainFrame.register(this);
@@ -2360,430 +2520,6 @@ var addPage = (function(){
     };
 
 } )().register();
-
-var pBey = (function(){
-	
-	return{
-
-		name: 'pBey',
-
-		plugin: 'gold_shop',
-
-		key: pb.plugin.key('gold_shop'),
-
-		settings: {
-
-			userData: pb.plugin.key('gold_shop').get(),
-			dataHolder: goldShop.settings.dataHolder.toString(),
-			pBeyData: ( pb.plugin.key('gold_shop').get(goldShop.settings.dataHolder) !== undefined && pb.plugin.key('gold_shop').get(goldShop.settings.dataHolder) !== null )? pb.plugin.key('gold_shop').get(goldShop.settings.dataHolder): {},
-			enabled: (goldShop.settings.pbey_enabled === 'true'),
-			dataHolderProfileHidden: (goldShop.settings.hide_data_holders_profile === 'true' )? true: false,
-			taxes_enabled: (goldShop.settings.taxes_enabled === 'true')? true: false,
-			pBeyLocation: '/user/' + goldShop.settings.dataHolder + '/pBey',
-
-			user_is_dataHolder: false,
-			user_can_sell: true,
-			user_account_disabled: false,
-
-			images: {
-				pBeyLogo: goldShop.images.pBey,
-				pBeyYootil: goldShop.images.pBeySmall
-			}
- 
-		},
-
-		init: function () {
-
-			this.setup();
-
-		},
-
-		setup: function () {		
-
-			if ( pb.data('user').id.toString() === this.settings.dataHolder ) {
-
-				this.settings.user_is_dataHolder = true;
-
-				if (this.settings.dataHolderProfileHidden === true )
-					this.dataHolderDisplay();
-
-			}
-
-			if (this.settings.enabled) {
-
-				this.addYootilButton();					
-
-				if ( !this.settings.user_is_dataHolder ) {				
-
-					if ( !this.has_pBey_data() ) {
-
-						if ( location.href.match(this.settings.pBeyLocation) ) {
-
-							this.createpBey();
-							this.setUserData();
-
-						}
-
-					} else {
-
-						var regpBey = new RegExp('^' + this.settings.pBeyLocation + '$'),
-							regAccount = new RegExp('^' + this.settings.pBeyLocation + '/account$'),
-							regEditAccount = new RegExp('^' + this.settings.pBeyLocation + '/editaccount$'),
-							regSell = new RegExp( '^' + this.settings.pBeyLocation + '/sell$')
-
-						if( this.settings.userData.pBey.d === true )
-							this.settings.user_account_disabled = true;
-
-						if ( location.pathname.match(regpBey) ) {
-
-							this.createpBey();
-
-						} else if ( location.pathname.match( regAccount ) ) {
-
-							this.accountPage();
-
-						} else if ( location.pathname.match( regEditAccount ) ){
-
-							this.editAccountPage();
-
-						} else if ( location.pathname.match( regSell ) && location.search === '' ) {
-
-							this.sellPageListing();
-
-						} else if ( location.pathname.match(regSell) && location.search.match(/\?sell\=/)) {
-
-							var user;
-
-							if ( getURLParams[UUID] === undefined ) {
-
-								this.sellPage(pb.data('page').member.id);
-
-							}
-
-						}
-
-					}
-				}
-			}
-
-		},
-
-		has_pBey_data: function () {
-			if (this.key.get().pBey !== undefined)
-				return true;
-			else
-				return false;
-		},
-
-		addYootilButton: function () {
-			yootil.bar.add(this.settings.pBeyLocation, this.settings.images.pBeyYootil, "pBey", "pBey");
-		},
-
-		setUserData: function () {
-			var self = this;			
-			pb.window.dialog('pBey_welcome', {
-				title: "Welcome to pBey",
-				html: "Congradulations, this is your first visit to pBey. Feel free to brows items that are currently for sale, or even sell some of your own items.",
-				close: function () { 
-					if ( self.settings.userData !== undefined && self.settings.userData !== '' ) {
-						var data = self.settings.userData;
-						data.pBey = {
-							fs: {}, 
-							co: {},
-							uuid: getUUID(),
-							tb: 0,
-							ts: 0,
-							r: 0,
-						};
-						pb.plugin.key('gold_shop').set({value: data})
-					} else {
-						self.settings.userData.pBey = {
-							fs: {}, 
-							co: {},
-							uuid: getUUID(),
-							tb: 0,
-							ts: 0,
-							r: 0,
-							d: false,
-						};
-						pb.plugin.key('gold_shop').set({value: data})							
-					}
-				}
-			});	
-
-			function getUUID(){
-				  function rand() {
-				    return Math.floor((1 + Math.random()) * 0x10000)
-				               .toString(16)
-				               .substring(1);
-				  }
-
-				  return rand() + '-' + rand() + '-' + rand();
-			}		
-		},
-
-		dataHolderDisplay: function () {
-			yootil.create.page(/[a-z]/, 'Data Holder').container('Error', 'This is the Data Holder account, please do you use this account.').appendTo('#content');
-		},
-
-		createpBey: function () {
-
-			var html = '',
-				reg = new RegExp('/user/' + this.settings.dataHolder + '/pBey'),
-				title = '';
-
-			html += '<div class="pBey-container">';
-			html += '<div class="pBey-logo"><img class="pBey-logo-image" max-width="150px" max-height="150px" src="'+ this.settings.images.pBeyLogo + '" /></div>';
-			html += '<div class="pBey-welcomeMessage"></div>';
-			html += '<div class="pBey-buy-sell">';			
-			html += '<a class="pBey-buy-button button" style="margin-left: 25%" href="' + this.settings.pBeyLocation + '/buy">Buy</a>';			
-			html += '<a class="pBey-sell-button button" href="' + this.settings.pBeyLocation + '/sell">Sell</a>'
-			html += '</div>';
-			html += '</div>';
-
-			title += 'pBey'
-			title += '<a class="pBey-account-button button" href="' + this.settings.pBeyLocation + '/account">Account</a>';
-
-			vitals.shop.api.removeNavItem('Members').removeNavItem(pb.data('page').member.name);
-
-			yootil.create.nav_branch(this.settings.pBeyLocation, 'pBey');
-			yootil.create.page( reg, "pBey").container(title, html).appendTo('#content');
-
-		},
-
-		accountPage: function () {
-
-			var html = '',
-				reg = new RegExp('/user/' + this.settings.dataHolder + '/pBey/account');
-				title = '';
-
-			html += '<div class="pBey-container">';
-			html += '<div class="pBey-logo"></div>';
-			html += '<div class="pBey-account-info">';
-			html += '<div><span class="pBey-namespace">UID:</span><span class="pBey-attribute">' + this.settings.userData.pBey.uuid + '</span></div>';
-			html += '<div><span class="pBey-namespace">Total Bought:</span><span class="pBey-attribute">' + this.settings.userData.pBey.tb + '</span></div>';
-			html += '<div><span class="pBey-namespace">Total Sold:</span><span class="pBey-attribute">' + this.settings.userData.pBey.ts + '</span></div>';
-			html += '<div><span class="pBey-namespace">Rating:</span><span class="pBey-attribute">' + this.settings.userData.pBey.r + '</span></div>';
-			html += '<div><span class="pBey-namespace">Disabled:</span><span class="pBey-attribute">' + this.settings.userData.pBey.d.toString() + '</span></div>';
-			html += '</div>';
-			html += '</div>';
-
-			title += 'pBey - Account';
-			title += '<a class="pBey-account-button button" href="' + this.settings.pBeyLocation + '/editaccount">Edit Account Settings</a>';
-
-			vitals.shop.api.removeNavItem('Members').removeNavItem(pb.data('page').member.name);			
-
-			yootil.create.nav_branch(this.settings.pBeyLocation, 'pBey');
-			yootil.create.nav_branch(location.pathname, 'Account');
-			yootil.create.page( reg, "pBey - Account" ).container(title, html).appendTo('#content');
-
-		},
-
-		editAccountPage: function () {
-
-			var html = '',
-				reg = new RegExp('/user/' + this.settings.dataHolder + '/pBey/editaccount');
-				title = '';
-
-			html += '<div class="pBey-container">';
-			html += '<div class="pBey-logo"></div>';
-			html += '<div class="pBey-account-info">';
-			if ( !this.settings.user_account_disabled )
-				html += '<div><a href="#" onclick="vitals.shop.pBey.disableAccount(\'' + yootil.user.id() + '\')" class="button">Disable Account</a></div>';
-			else
-				html += '<div><a href="#" onclick="vitals.shop.pBey.enableAccount(\'' + yootil.user.id() + '\')" class="button">Enable Account</a></div>';
-
-			html += '</div>';
-			html += '</div>';
-
-			title += 'pBey - Edit Account Settings';
-
-			vitals.shop.api.removeNavItem('Members').removeNavItem(pb.data('page').member.name);			
-
-			yootil.create.nav_branch(this.settings.pBeyLocation, 'pBey');
-			yootil.create.nav_branch(location.pathname, 'Account');
-			yootil.create.page( reg, "pBey - Edit Account Settings" ).container(title, html).appendTo('#content');
-
-
-		},
-
-		disableAccount: function () {
-			pb.window.dialog('pBey_disable_account',{
-				title: "Disable Account",
-				html: "Are you sure you wish to disable your account? All of your current item listings will be remporarily taken down until your re-enable your account.",
-				buttons: {
-					"Yes": function () {
-						vitals.shop.pBey.settings.userData.pBey.d = true;
-						pb.plugin.key('gold_shop').set({value: vitals.shop.pBey.settings.userData});
-						$(document).ajaxComplete(function(){location.href = vitals.shop.pBey.settings.pBeyLocation + '/account'});						
-						$(this).dialog('close');
-					},
-					"Cancel": function () {
-						$(this).dialog('close');
-					}
-				}
-			})
-		},
-
-		enableAccount: function () {
-			pb.window.dialog('pBey_enable_account',{
-				title: "Enable Account",
-				html: "Are you sure you wish to enable your account?",
-				buttons: {
-					'Yes': function () {
-						vitals.shop.pBey.settings.userData.pBey.d = false;
-						pb.plugin.key('gold_shop').set({value: vitals.shop.pBey.settings.userData});	
-						$(document).ajaxComplete(function(){location.href = vitals.shop.pBey.settings.pBeyLocation + '/account'});											
-						$(this).dialog('close');
-					},
-					'cancel': function () {
-						$(this).dialog('close');
-					}
-				}
-			})
-		},
-
-		sellPageListing: function () {
-
-			var html = '',
-				reg = new RegExp('/user/' + this.settings.dataHolder + '/pBey/sell');
-				title = '';
-
-			html += '<div class="pBey-container">';
-			html += '<div class="pBey-logo"></div>';
-			html += '<div class="pBey-welcomeMessage"></div>';
-			html += '<div id="item-info-box"></div>';
-			html += '</div>';
-
-			title += 'pBey - Sell';
-
-			vitals.shop.api.removeNavItem('Members').removeNavItem(pb.data('page').member.name);			
-
-			yootil.create.nav_branch(this.settings.pBeyLocation, 'pBey');
-			yootil.create.nav_branch(location.pathname, 'Sell');
-			yootil.create.page( reg, "pBey - Sell" ).container(title, html).appendTo('#content');	
-
-			this.addItems(pb.data('page').member.id);		
-
-		},
-
-        addItems: function () {
-
-            var bought = (user === null )? this.settings.userData.b: vitals.shop.api.get(user).b,
-                received = (user === null )? this.settings.userData.r: vitals.shop.api.get(user).r,
-                items = vitals.shop.data.shopVariables.items,
-                itemKeys = Object.keys( items );
-
-            if ( bought !== undefined && received !== '' ) {                    
-
-                for ( var i = 0; i < itemKeys.length; i++ ) {
-
-                    var total = 0,
-                        boughtTotal = 0,
-                        receivedTotal = 0;
-
-                    if ( received[itemKeys[i]] != undefined || bought[itemKeys[i]] != undefined ) {
-
-                        if ( bought[itemKeys[i]] != undefined ) {
-
-                            total = total + parseInt( bought[itemKeys[i]] );
-
-                            boughtTotal = parseInt( bought[itemKeys[i]] );
-
-                        }
-
-                        if ( received[itemKeys[i]] != undefined ) {
-
-                            total = total + parseInt( received[itemKeys[i]] );
-
-                            receivedTotal = parseInt( received[itemKeys[i]] );
-
-                        }
-
-                        if ( total > 0 ) {
-
-                            vitals.shop.pBey.createItem( itemKeys[i], total, boughtTotal, receivedTotal );
-
-                        }   
-
-                    }
-
-                }
-
-            }
-
-            $('.shop-item').css(vitals.shop.profilePage.data.styles.item)
-
-        },
-
-        createItem: function ( itemId, total, boughtTotal, receivedTotal ) {
-
-            var items = vitals.shop.data.shopVariables.items,
-                itemData = items[itemId],
-                html = '';
-
-            html += '<div class="shop-item" onmouseover="vitals.shop.profilePage.itemHover(this)" onmouseout="vitals.shop.profilePage.itemHoverOut(this)">';
-            html += '<img onclick="location.href = \''+ this.settings.pBeyLocation + '\' + \'/sell?sell=' + itemId + '\'" class="pBey-item-small" src="' + itemData.image_of_item + '" title="Click to sell" />';
-            html += '</div>';
-
-            $( html ).data( { id: itemId, name: itemData.item_name, total: total, bought: boughtTotal, received: receivedTotal } ).appendTo( '.pBey-welcomeMessage' );
-
-        },	
-
-        sellPage: function (user) {
-
-            var bought = (user === null )? this.settings.userData.b: vitals.shop.api.get(user).b,
-                received = (user === null )? this.settings.userData.r: vitals.shop.api.get(user).r,
-                items = vitals.shop.data.shopVariables.items,
-                itemKeys = Object.keys( items );
-
-            if ( bought !== undefined && received !== '' ) {                    
-
-                for ( var i = 0; i < itemKeys.length; i++ ) {
-
-                    var total = 0,
-                        boughtTotal = 0,
-                        receivedTotal = 0;
-
-                    if ( received[itemKeys[i]] != undefined || bought[itemKeys[i]] != undefined ) {
-
-                        if ( bought[itemKeys[i]] != undefined ) {
-
-                            total = total + parseInt( bought[itemKeys[i]] );
-
-                            boughtTotal = parseInt( bought[itemKeys[i]] );
-
-                        }
-
-                        if ( received[itemKeys[i]] != undefined ) {
-
-                            total = total + parseInt( received[itemKeys[i]] );
-
-                            receivedTotal = parseInt( received[itemKeys[i]] );
-
-                        }
-
-                        if ( total > 0 ) {
-
-                            vitals.shop.pBey.createItem( itemKeys[i], total, boughtTotal, receivedTotal );
-
-                        }   
-
-                    }
-
-                }   
-
-            }     	
-
-        },
-
-		register: function() {
-			vitals.shop.mainFrame.register(this);
-		},
-
-	}
-
-})().register();
 
 //* This method is copied from http://stackoverflow.com/questions/9229645/remove-duplicates-from-javascript-array
 removeArrDuples = function(ary, key) {

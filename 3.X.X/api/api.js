@@ -246,16 +246,24 @@ var api = (function() {
 
         },
 
-        removeNavItem: function (reg) {
-            var reg = new RegExp("^" + reg + "$");
+        removeNavItem: function (args) {
 
-            $('.nav-tree-branch').each(function(){
-                if ( $(this).text().match(reg) )
-                    $(this).remove();
-            })
+            var array
+                _nav = $('#nav-tree');
+
+            if ( Object.prototype.toString.call(args) !== "[object Array]" )
+                array = new Array(args);
+            else
+                array = args;
+
+            for ( i in array ) { 
+
+                _nav.find('[href="' + array[i].toString() + '"]').parentsUntil('#nav-tree').remove();
+
+            }       
 
             return vitals.shop.api;
-        },
+        },        
 
         register: function () {
             vitals.shop.mainFrame.register(this);

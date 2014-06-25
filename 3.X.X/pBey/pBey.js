@@ -91,13 +91,7 @@ var pBey = (function(){
 
 						} else if ( location.pathname.match(regSell) && location.search.match(/\?sell\=/)) {
 
-							var user;
-
-							if ( getURLParams[UUID] === undefined ) {
-
-								this.sellPage(pb.data('page').member.id);
-
-							}
+							this.sellPage();
 
 						}
 
@@ -152,9 +146,7 @@ var pBey = (function(){
 
 			function getUUID(){
 				  function rand() {
-				    return Math.floor((1 + Math.random()) * 0x10000)
-				               .toString(16)
-				               .substring(1);
+				    return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
 				  }
 
 				  return rand() + '-' + rand() + '-' + rand();
@@ -183,7 +175,7 @@ var pBey = (function(){
 			title += 'pBey'
 			title += '<a class="pBey-account-button button" href="' + this.settings.pBeyLocation + '/account">Account</a>';
 
-			vitals.shop.api.removeNavItem('Members').removeNavItem(pb.data('page').member.name);
+			vitals.shop.api.removeNavItem(['/members', '/user/' + pb.data('page').member.id]);
 
 			yootil.create.nav_branch(this.settings.pBeyLocation, 'pBey');
 			yootil.create.page( reg, "pBey").container(title, html).appendTo('#content');
@@ -210,7 +202,7 @@ var pBey = (function(){
 			title += 'pBey - Account';
 			title += '<a class="pBey-account-button button" href="' + this.settings.pBeyLocation + '/editaccount">Edit Account Settings</a>';
 
-			vitals.shop.api.removeNavItem('Members').removeNavItem(pb.data('page').member.name);			
+			vitals.shop.api.removeNavItem(['/members', '/user/' + pb.data('page').member.id]);			
 
 			yootil.create.nav_branch(this.settings.pBeyLocation, 'pBey');
 			yootil.create.nav_branch(location.pathname, 'Account');
@@ -237,14 +229,14 @@ var pBey = (function(){
 
 			title += 'pBey - Edit Account Settings';
 
-			vitals.shop.api.removeNavItem('Members').removeNavItem(pb.data('page').member.name);			
+			vitals.shop.api.removeNavItem(['/members', '/user/' + pb.data('page').member.id]);		
 
 			yootil.create.nav_branch(this.settings.pBeyLocation, 'pBey');
 			yootil.create.nav_branch(location.pathname, 'Account');
 			yootil.create.page( reg, "pBey - Edit Account Settings" ).container(title, html).appendTo('#content');
 
 
-		},
+		},	
 
 		disableAccount: function () {
 			pb.window.dialog('pBey_disable_account',{
@@ -308,48 +300,13 @@ var pBey = (function(){
 
         addItems: function () {
 
-            var bought = (user === null )? this.settings.userData.b: vitals.shop.api.get(user).b,
-                received = (user === null )? this.settings.userData.r: vitals.shop.api.get(user).r,
-                items = vitals.shop.data.shopVariables.items,
-                itemKeys = Object.keys( items );
+        	var hash = this.userItemInfoHash();
 
-            if ( bought !== undefined && received !== '' ) {                    
+        	for ( var i in hash ) {
 
-                for ( var i = 0; i < itemKeys.length; i++ ) {
+	        	vitals.shop.pBey.createItem( hash[i].id, hash[i].total, hash[i].boughtTotal, hash[i].receivedTotal );
 
-                    var total = 0,
-                        boughtTotal = 0,
-                        receivedTotal = 0;
-
-                    if ( received[itemKeys[i]] != undefined || bought[itemKeys[i]] != undefined ) {
-
-                        if ( bought[itemKeys[i]] != undefined ) {
-
-                            total = total + parseInt( bought[itemKeys[i]] );
-
-                            boughtTotal = parseInt( bought[itemKeys[i]] );
-
-                        }
-
-                        if ( received[itemKeys[i]] != undefined ) {
-
-                            total = total + parseInt( received[itemKeys[i]] );
-
-                            receivedTotal = parseInt( received[itemKeys[i]] );
-
-                        }
-
-                        if ( total > 0 ) {
-
-                            vitals.shop.pBey.createItem( itemKeys[i], total, boughtTotal, receivedTotal );
-
-                        }   
-
-                    }
-
-                }
-
-            }
+        	}
 
             $('.shop-item').css(vitals.shop.profilePage.data.styles.item)
 
@@ -371,48 +328,7 @@ var pBey = (function(){
 
         sellPage: function (user) {
 
-            var bought = (user === null )? this.settings.userData.b: vitals.shop.api.get(user).b,
-                received = (user === null )? this.settings.userData.r: vitals.shop.api.get(user).r,
-                items = vitals.shop.data.shopVariables.items,
-                itemKeys = Object.keys( items );
-
-            if ( bought !== undefined && received !== '' ) {                    
-
-                for ( var i = 0; i < itemKeys.length; i++ ) {
-
-                    var total = 0,
-                        boughtTotal = 0,
-                        receivedTotal = 0;
-
-                    if ( received[itemKeys[i]] != undefined || bought[itemKeys[i]] != undefined ) {
-
-                        if ( bought[itemKeys[i]] != undefined ) {
-
-                            total = total + parseInt( bought[itemKeys[i]] );
-
-                            boughtTotal = parseInt( bought[itemKeys[i]] );
-
-                        }
-
-                        if ( received[itemKeys[i]] != undefined ) {
-
-                            total = total + parseInt( received[itemKeys[i]] );
-
-                            receivedTotal = parseInt( received[itemKeys[i]] );
-
-                        }
-
-                        if ( total > 0 ) {
-
-                            vitals.shop.pBey.createItem( itemKeys[i], total, boughtTotal, receivedTotal );
-
-                        }   
-
-                    }
-
-                }   
-
-            }     	
+			var hash = this.userItemInfoHash();  	
 
         },
 

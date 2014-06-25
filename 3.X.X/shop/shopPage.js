@@ -4,31 +4,29 @@ var shopPage = (function () {
 
     return {
 
-    	name: 'shopPage',
-
-        module: 'shop',
+        name: 'shopPage',
 
         init: function () {
 
             if ( vitals.shop.mainFrame.data.location === "shop" ) {
 
-	            this.createShopPage();
+                this.createShopPage();
 
-	            this.createReturn();
+                this.createReturn();
 
-	            this.createCatBar();
+                this.createCatBar();
 
-	            this.createCategories();            
+                this.createCategories();            
 
-	            if ( Object.keys( vitals.shop.data.shopVariables.packages ).length > 0 ) {
+                if ( Object.keys( vitals.shop.data.shopVariables.packages ).length > 0 ) {
 
-	                this.addPackageItems();
+                    this.addPackageItems();
 
-	            }
+                }
 
-	            this.addShopItems();
+                this.addShopItems();
 
-	            this.addShopCss();  
+                this.addShopCss();  
 
             }          
 

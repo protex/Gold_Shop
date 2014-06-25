@@ -1,5 +1,3 @@
-
-
 var mainFrame = ( function () {
 
     return {
