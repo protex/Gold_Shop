@@ -7,6 +7,22 @@
 	},
 	"buffers":
 	[
+		{
+			"file": "v4/shop.js",
+			"settings":
+			{
+				"buffer_size": 9303,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "v4/infoPage.js",
+			"settings":
+			{
+				"buffer_size": 5032,
+				"line_ending": "Windows"
+			}
+		}
 	],
 	"build_system": "Packages/JSLint/JSLint.sublime-build",
 	"command_palette":
@@ -80,16 +96,19 @@
 	},
 	"file_history":
 	[
-		"/C/Users/Peter/Documents/My_Stuff/PBP/Gold_Shop/v4/shop.js",
-		"/C/Users/Peter/Documents/My_Stuff/PBP/Gold_Shop/3.X.X/shop/shop.js",
-		"/C/Users/Peter/Documents/My_Stuff/PBP/Gold_Shop/v4/hash.js",
-		"/C/Users/Peter/Documents/My_Stuff/PBP/Gold_Shop/v4/mainFrame.js",
 		"/C/Users/Peter/Documents/My_Stuff/PBP/Gold_Shop/v4/data.js",
+		"/C/Users/Peter/Documents/My_Stuff/PBP/Gold_Shop/3.X.X/pBey/pBey.js",
+		"/C/Users/Peter/Documents/My_Stuff/PBP/Gold_Shop/3.X.X/shop/shop.js",
+		"/C/Users/Peter/Documents/My_Stuff/PBP/Gold_Shop/3.X.X/shop/shopPage.js",
+		"/C/Users/Peter/Documents/My_Stuff/PBP/Gold_Shop/3.X.X/mainFrame/mainFrame.js",
+		"/C/Users/Peter/Documents/My_Stuff/PBP/Gold_Shop/v4/hash.js",
+		"/C/Users/Peter/Documents/My_Stuff/PBP/Gold_Shop/3.X.X/shop/infoPage.js",
+		"/C/Users/Peter/Documents/My_Stuff/PBP/Gold_Shop/3.X.X/shop/buyPage.js",
+		"/C/Users/Peter/Documents/My_Stuff/PBP/Gold_Shop/v4/shop.js",
+		"/C/Users/Peter/Documents/My_Stuff/PBP/Gold_Shop/v4/mainFrame.js",
 		"/C/Users/Peter/Documents/My_Stuff/PBP/Gold_Shop/v4/manFrame.js",
 		"/C/Users/Peter/AppData/Roaming/Sublime Text 2/Packages/User/Default (Windows).sublime-keymap",
-		"/C/Users/Peter/Documents/My_Stuff/PBP/Gold_Shop/3.X.X/mainFrame/mainFrame.js",
 		"/C/Users/Peter/Documents/My_Stuff/PBP/Gold_Shop/gShop.dev.js",
-		"/C/Users/Peter/Documents/My_Stuff/PBP/Gold_Shop/3.X.X/pBey/pBey.js",
 		"/C/Users/Peter/Documents/My_Stuff/PBP/Gold_Shop/3.X.X/shop/profilePage.js",
 		"/C/Users/Peter/Documents/My_Stuff/PBP/Gold_Shop/3.X.X/api/api.js",
 		"/C/Users/Peter/Documents/My_Stuff/PBP/Gold_Shop/3.X.X/pBey/pBey.css",
@@ -101,10 +120,7 @@
 		"/C/Users/Peter/Documents/My_Stuff/PBP/Gold_Shop/3.X.X/shop/removePage.js",
 		"/C/Users/Peter/Documents/My_Stuff/PBP/Gold_Shop/3.X.X/shop/addPage.js",
 		"/C/Users/Peter/Documents/My_Stuff/PBP/Gold_Shop/3.X.X/shop/buyPackagePage.js",
-		"/C/Users/Peter/Documents/My_Stuff/PBP/Gold_Shop/3.X.X/shop/buyPage.js",
 		"/C/Users/Peter/Documents/My_Stuff/PBP/Gold_Shop/3.X.X/shop/givePage.js",
-		"/C/Users/Peter/Documents/My_Stuff/PBP/Gold_Shop/3.X.X/shop/infoPage.js",
-		"/C/Users/Peter/Documents/My_Stuff/PBP/Gold_Shop/3.X.X/shop/shopPage.js",
 		"/C/Users/Peter/AppData/Roaming/Sublime Text 2/Packages/Default/Default (Windows).sublime-keymap",
 		"/C/Users/Peter/Documents/My_Stuff/PBP/Gold_Shop/gShop.full.js",
 		"/C/Users/Peter/Documents/My_Stuff/PBP/Achievements/achievements.js",
@@ -211,7 +227,7 @@
 	],
 	"find":
 	{
-		"height": 35.0
+		"height": 48.0
 	},
 	"find_in_files":
 	{
@@ -226,6 +242,8 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"shopPage",
+			"pBey",
 			"internal",
 			"}\n",
 			"vitals.shop.infoPage",
@@ -289,6 +307,7 @@
 		"regex": false,
 		"replace_history":
 		[
+			"shop",
 			"this",
 			"\"vitals.shop.shopPage",
 			"this.",
@@ -315,8 +334,271 @@
 	"groups":
 	[
 		{
+			"selected": 1,
 			"sheets":
 			[
+				{
+					"buffer": 0,
+					"file": "v4/shop.js",
+					"settings":
+					{
+						"buffer_size": 9303,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2074,
+								2074
+							]
+						],
+						"settings":
+						{
+							"codeintel": true,
+							"codeintel_config":
+							{
+								"JavaScript":
+								{
+									"codeintel_max_recursive_dir_depth": 2,
+									"codeintel_scan_files_in_project": false,
+									"javascriptExtraPaths":
+									[
+									]
+								},
+								"PHP":
+								{
+									"codeintel_max_recursive_dir_depth": 5,
+									"codeintel_scan_files_in_project": false,
+									"phpExtraPaths":
+									[
+									]
+								},
+								"Python":
+								{
+									"env":
+									{
+									}
+								}
+							},
+							"codeintel_enabled_languages":
+							[
+								"JavaScript",
+								"Mason",
+								"XBL",
+								"XUL",
+								"RHTML",
+								"SCSS",
+								"Python",
+								"HTML",
+								"Ruby",
+								"Python3",
+								"XML",
+								"Sass",
+								"XSLT",
+								"Django",
+								"HTML5",
+								"Perl",
+								"CSS",
+								"Twig",
+								"Less",
+								"Smarty",
+								"Node.js",
+								"Tcl",
+								"TemplateToolkit",
+								"PHP"
+							],
+							"codeintel_live": true,
+							"codeintel_live_enabled_languages":
+							[
+								"JavaScript",
+								"Mason",
+								"XBL",
+								"XUL",
+								"RHTML",
+								"SCSS",
+								"Python",
+								"HTML",
+								"Ruby",
+								"Python3",
+								"XML",
+								"Sass",
+								"XSLT",
+								"Django",
+								"HTML5",
+								"Perl",
+								"CSS",
+								"Twig",
+								"Less",
+								"Smarty",
+								"Node.js",
+								"Tcl",
+								"TemplateToolkit",
+								"PHP"
+							],
+							"codeintel_max_recursive_dir_depth": 10,
+							"codeintel_scan_exclude_dir":
+							{
+								"JavaScript":
+								[
+									"/build/",
+									"/min/"
+								]
+							},
+							"codeintel_scan_files_in_project": true,
+							"codeintel_selected_catalogs":
+							[
+								"PyWin32",
+								"jQuery",
+								"Rails"
+							],
+							"codeintel_snippets": true,
+							"codeintel_syntax_map":
+							{
+								"Python Django": "Python"
+							},
+							"codeintel_tooltips": "popup",
+							"sublime_auto_complete": true,
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 700.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "v4/infoPage.js",
+					"settings":
+					{
+						"buffer_size": 5032,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								204,
+								204
+							]
+						],
+						"settings":
+						{
+							"codeintel": true,
+							"codeintel_config":
+							{
+								"JavaScript":
+								{
+									"codeintel_max_recursive_dir_depth": 2,
+									"codeintel_scan_files_in_project": false,
+									"javascriptExtraPaths":
+									[
+									]
+								},
+								"PHP":
+								{
+									"codeintel_max_recursive_dir_depth": 5,
+									"codeintel_scan_files_in_project": false,
+									"phpExtraPaths":
+									[
+									]
+								},
+								"Python":
+								{
+									"env":
+									{
+									}
+								}
+							},
+							"codeintel_enabled_languages":
+							[
+								"JavaScript",
+								"Mason",
+								"XBL",
+								"XUL",
+								"RHTML",
+								"SCSS",
+								"Python",
+								"HTML",
+								"Ruby",
+								"Python3",
+								"XML",
+								"Sass",
+								"XSLT",
+								"Django",
+								"HTML5",
+								"Perl",
+								"CSS",
+								"Twig",
+								"Less",
+								"Smarty",
+								"Node.js",
+								"Tcl",
+								"TemplateToolkit",
+								"PHP"
+							],
+							"codeintel_live": true,
+							"codeintel_live_enabled_languages":
+							[
+								"JavaScript",
+								"Mason",
+								"XBL",
+								"XUL",
+								"RHTML",
+								"SCSS",
+								"Python",
+								"HTML",
+								"Ruby",
+								"Python3",
+								"XML",
+								"Sass",
+								"XSLT",
+								"Django",
+								"HTML5",
+								"Perl",
+								"CSS",
+								"Twig",
+								"Less",
+								"Smarty",
+								"Node.js",
+								"Tcl",
+								"TemplateToolkit",
+								"PHP"
+							],
+							"codeintel_max_recursive_dir_depth": 10,
+							"codeintel_scan_exclude_dir":
+							{
+								"JavaScript":
+								[
+									"/build/",
+									"/min/"
+								]
+							},
+							"codeintel_scan_files_in_project": true,
+							"codeintel_selected_catalogs":
+							[
+								"PyWin32",
+								"jQuery",
+								"Rails"
+							],
+							"codeintel_snippets": true,
+							"codeintel_syntax_map":
+							{
+								"Python Django": "Python"
+							},
+							"codeintel_tooltips": "popup",
+							"sublime_auto_complete": true,
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				}
 			]
 		}
 	],
