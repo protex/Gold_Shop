@@ -53,8 +53,8 @@ vitals.shop = (function(){
 			this.settings.shop_welcome_message = ( this.plugin.settings.welcome_message )? this.plugin.settings.welcome_message: this.settings.shop_name;
 			this.settings.user_submissions_open = false;
 			this.settings.shop_logo = this.plugin.images.ShopLarge;
-			this.settings.shop_items = this.plugin.settings.items
-			this.settings.shop_categories = this.plugin.settings.categories
+			this.settings.shop_items = this.plugin.settings.items;
+			this.settings.shop_categories = this.plugin.settings.categories;
 
 			// Create item and category hash
 			for ( var i in this.settings.shop_items ) {
