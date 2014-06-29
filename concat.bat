@@ -1,4 +1,4 @@
-cd C:\Users\Peter\Documents\My_Stuff\PBP\Gold_Shop
+cd C:\Users\Peter\Documents\Aptana Studio 3 Workspace\Gold_Shop
 if exist gShop.dev.js erase gShop.dev.js
 type v4\shop.js v4\infoPage.js v4\data.js v4\misc.js >> gShop.dev.js
 findstr /rvc:"^ *// " "gShop.dev.js" >"noComment1.js"
