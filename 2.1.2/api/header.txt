@@ -1,5 +1,0 @@
-
-
-vitals.shop.api = (function(){
-	
-    return{
