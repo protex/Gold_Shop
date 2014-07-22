@@ -100,10 +100,10 @@ vitals.shop = (function(){
 			var welcomehtml = '',
 				shopHTML = '',
 				catHTML = '';
-
-            yootil.create.page(/\/\?shop/);
-            yootil.create.nav_branch('/?shop', this.settings.shop_name);            
-
+			
+			yootil.create.page(/\/\?shop/);
+			yootil.create.nav_branch('/?shop', this.settings.shop_name);            
+			
 			welcomehtml += '<div id="shop-container">';
 			welcomehtml += '<div class="shop-logo"><img class="shop-logo-image" max-width="150px" max-height="150px" src="'+ this.settings.shop_logo + '" /></div>';
 			welcomehtml += '<div class="shop-welcomeMessage"><p>' + this.settings.shop_welcome_message + '</p></div>';
@@ -112,49 +112,55 @@ vitals.shop = (function(){
 			welcomehtml += '<div id="swap-view-button" class="left-selected" title="Change Shop View"><div class="side" onclick="$(\'#shop-shelf-icon\').hide();$(\'#shop-shelf-details\').show();$(this).parent().css(\'background\',\'url(' + vitals.shop.plugin.images.leftselectedbutton + ')\')"></div><div class="side" onclick="$(\'#shop-shelf-icon\').show();$(\'#shop-shelf-details\').hide();$(this).parent().css(\'background\',\'url(' + vitals.shop.plugin.images.rightselectedbutton + ')\')"></div></div>';		
 			welcomehtml += '</div>';
 			welcomehtml += '</div>';
-
-            yootil.create.container(this.settings.shop_name + '<span style="float: right">(' + pixeldepth.monetary.settings.text.wallet + ': ' + pixeldepth.monetary.get(true) + ')', welcomehtml).appendTo('#content');            
-
-            shopHTML += '<div id="shop-shelf-icon">';
-            shopHTML += '<div class="item-shelf"></div>';
-            shopHTML += '</div>';
-            shopHTML += '<div id="shop-shelf-details">';
-            shopHTML += '<div class="item-shelf"></div>';
-            shopHTML += '</div>';
-            yootil.create.container("Items", shopHTML).attr('id', 'shop-item-container').appendTo('#content'); 
-            $('#shop-item-container > .content.pad-all').removeClass('pad-all');
-
-            catHTML += '<div class="cat-bar">';
-            catHTML += '<table>';
-            catHTML += '<tbody>';
-            catHTML += '<tr>';
-            catHTML += '<td><a href="javascript:coid(0)" onclick="$(\'.shop-item\').show();" class="button">All</a></td>';
-            for ( var i in this.settings.shop_categories ) {
-            	var cClass = this.settings.shop_categories[i].replace(/\s|'|"|&|\./g, '');
-            	catHTML += '<td><a href="javascript:void(0)" onclick="$(\'.shop-item\').hide();$(\'.' + cClass + '\').show();" class="button">' + this.settings.shop_categories[i] + '</a></td>';
-            }
-            catHTML += '</tr>';
-            catHTML += '</tbody>';
-            catHTML += '</table';
-            catHTML += '</div>';
-            $('#shop-shelf-icon').before(catHTML);            
-
-            function item_constructor(item_data) {
-            	this.amount = item_data.amount;
-            	this.cost = item_data.cost_of_item;
-            	this.description = item_data.description;
-            	this.is_givable = item_data.givable;
-            	this.image = item_data.image_of_item;
-            	this.category = item_data.item_category;
-            	this.id = item_data.item_id;
-            	this.name = item_data.item_name;
-            	this.is_returnable = item_data.returnable; 
-            }    
-            item_constructor.prototype.icon = function () {
-            	var item = this,
-            		cClass = this.category.replace(/\s|'|"|&|\./g, ''),
-					html = '';
-
+			
+			yootil.create.container(this.settings.shop_name + '<span style="float: right">(' + pixeldepth.monetary.settings.text.wallet + ': ' + pixeldepth.monetary.get(true) + ')', welcomehtml).appendTo('#content');            
+			
+			// Add the icon view
+			shopHTML += '<div id="shop-shelf-icon">';
+			shopHTML += '<div class="item-shelf"></div>';
+			shopHTML += '</div>';
+			// Add the detailed view
+			shopHTML += '<div id="shop-shelf-details">';
+			shopHTML += '<div class="item-shelf"></div>';
+			shopHTML += '</div>';
+			yootil.create.container("Items", shopHTML).attr('id', 'shop-item-container').appendTo('#content'); 
+			$('#shop-item-container > .content.pad-all').removeClass('pad-all');
+			
+			// Create cat bars
+			catHTML += '<div class="cat-bar">';
+			catHTML += '<table>';
+			catHTML += '<tbody>';
+			catHTML += '<tr>';
+			catHTML += '<td><a href="javascript:coid(0)" onclick="$(\'.shop-item\').show();" class="button">All</a></td>';
+			for ( var i in this.settings.shop_categories ) {
+				var cClass = this.settings.shop_categories[i].replace(/\s|'|"|&|\./g, '');
+				catHTML += '<td><a href="javascript:void(0)" onclick="$(\'.shop-item\').hide();$(\'.' + cClass + '\').show();" class="button">' + this.settings.shop_categories[i] + '</a></td>';	
+			}
+			catHTML += '</tr>';
+			catHTML += '</tbody>';
+			catHTML += '</table';
+			catHTML += '</div>';
+			$('#shop-shelf-icon').before(catHTML);            
+			
+			// Item constructor
+			function item_constructor(item_data) {
+				this.amount = item_data.amount;
+				this.cost = item_data.cost_of_item;
+				this.description = item_data.description;
+				this.is_givable = item_data.givable;
+				this.image = item_data.image_of_item;
+				this.category = item_data.item_category;
+				this.id = item_data.item_id;
+				this.name = item_data.item_name;
+				this.is_returnable = item_data.returnable; 
+			}    
+			// Icon constructor
+			item_constructor.prototype.icon = function () {
+				var item = this,
+					cClass = this.category.replace(/\s|'|"|&|\./g, ''),
+					
+				html = '';
+				
 				html += '<div class="shopItemIcon ' + cClass + ' oHidden shop-item" id="' + item.id + '-icon" onmouseover="$(this).removeClass(\'oHidden\')" onmouseout="$(this).addClass(\'oHidden\')">';
 				html += '<div class="itemInner">';
 				html += '<div class="itemTitle">';
@@ -172,51 +178,54 @@ vitals.shop = (function(){
 				html += '</div>';
 				html += '</div>';
 				html += '</div>';
-
+			
 				return $(html);
-            }  
-
-            item_constructor.prototype.detailed = function () {
-            	var item = this;
-            		cClass = this.category.replace(/\s|'|&|\./g, '');
-            		html = '';
-
-            	html += '<div class="shopItemDetailed ' + cClass + ' shop-item" id="' + item.id + '-detailed">';
-            	html += '<div class="detailedImage">';
-            	html += '<img src="' + item.image + '" style="max-width: 150px; max-height: 150px;" />';
-            	html += '<div>';
-            	html += '<div class="add-to-cart"><a href="javascript:void(0)" class="button">Add To Cart</a></div>';
-            	html += '</div>';
-            	html += '</div>';
-            	html += '<div class="detailedDetails">';
-            	html += '<div class="head">';
-            	html += '<h3><a href="/?shop/info&id=' + item.id + '">' + item.name + '</a></h3>';
-            	html += '<div class="stock">&infin; in stock</div>';
-            	html += '</div>';
-            	html += '<p class="item-description">' + item.description + '</p>';
-            	html += '<div class="item-info">';
-            	html += '<span class="attribute">' + this.category + '</span>';
-            	html += '<span class="attribute">' + ((this.is_givable == "true")? "Givable": "Non-Givable") + '</span>';
-            	html += '<span class="attribute">' + ((this.is_returnable == "true")? "Returnable": "Non-Returnable") + '</span>';            	            	
-            	html += '<span class="attribute">' + this.id + '</span>';
-            	html += '</div>';
-            	html += '</div>';
-            	html += '</div>';
-
-            	return $(html);
-            }
-
-            for ( var i in vitals.shop.settings.shop_items ) {
-            	var x = new item_constructor(vitals.shop.settings.shop_items[i]);
-            	var y = x.icon();
-            	y.appendTo('#shop-shelf-icon > .item-shelf');
-            }    
-
-            for ( var i in vitals.shop.settings.shop_items ) {
-            	var x = new item_constructor(vitals.shop.settings.shop_items[i]);
-            	var y = x.detailed();
-            	y.appendTo('#shop-shelf-details > .item-shelf');
-            }           
+			}  
+			
+			// Details constructor
+			item_constructor.prototype.detailed = function () {
+				var item = this;
+					cClass = this.category.replace(/\s|'|&|\./g, '');
+					html = '';
+			
+				html += '<div class="shopItemDetailed ' + cClass + ' shop-item" id="' + item.id + '-detailed">';
+				html += '<div class="detailedImage">';
+				html += '<img src="' + item.image + '" style="max-width: 150px; max-height: 150px;" />';
+				html += '<div>';
+				html += '<div class="add-to-cart"><a href="javascript:void(0)" class="button">Add To Cart</a></div>';
+				html += '</div>';
+				html += '</div>';
+				html += '<div class="detailedDetails">';
+				html += '<div class="head">';
+				html += '<h3><a href="/?shop/info&id=' + item.id + '">' + item.name + '</a></h3>';
+				html += '<div class="stock">&infin; in stock</div>';
+				html += '</div>';
+				html += '<p class="item-description">' + item.description + '</p>';
+				html += '<div class="item-info">';
+				html += '<span class="attribute">' + this.category + '</span>';
+				html += '<span class="attribute">' + ((this.is_givable == "true")? "Givable": "Non-Givable") + '</span>';
+				html += '<span class="attribute">' + ((this.is_returnable == "true")? "Returnable": "Non-Returnable") + '</span>';            	            	
+				html += '<span class="attribute">' + this.id + '</span>';
+				html += '</div>';
+				html += '</div>';
+				html += '</div>';
+			
+				return $(html);
+			}
+			
+			// Add icon items
+			for ( var i in vitals.shop.settings.shop_items ) {
+				var x = new item_constructor(vitals.shop.settings.shop_items[i]);
+				var y = x.icon();
+				y.appendTo('#shop-shelf-icon > .item-shelf');
+			}    
+			
+			// Add detailed items
+			for ( var i in vitals.shop.settings.shop_items ) {
+				var x = new item_constructor(vitals.shop.settings.shop_items[i]);
+				var y = x.detailed();
+				y.appendTo('#shop-shelf-details > .item-shelf');
+			}           
 
 
 		},
